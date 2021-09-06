@@ -77,13 +77,16 @@ WSGI_APPLICATION = 'tracker.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-
+from decouple import config
+DB_NAME=config('DB_NAME')
+DB_USER=config('DB_USER')
+DB_PASSWORD=config('DB_PASSWORD')
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django',
-        'USER' : 'djangouser',
-        'PASSWORD' : 'Anurag_22',
+        'NAME': DB_NAME,
+        'USER' : DB_USER,
+        'PASSWORD' : DB_PASSWORD,
         'HOST' : '127.0.0.1',
         'PORT' : '3306'
 
