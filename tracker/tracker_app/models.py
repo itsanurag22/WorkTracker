@@ -9,6 +9,7 @@ class User(AbstractUser):
     email_address = models.EmailField(max_length=254)
     admin_check = models.BooleanField(default=False)
     display_picture = models.ImageField(blank=True)
+    banned = models.BooleanField(default=False)
     #last_login = models.DateTimeField(blank=True,  auto_now_add=True)
     def __str__(self):
         return self.username
@@ -19,7 +20,7 @@ class User(AbstractUser):
 class Project(models.Model):
     name = models.CharField(max_length=50)
     description = RichTextField()
-    creator = models.IntegerField(blank=False)
+    creator = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="proj_creator")
     project_members = models.ManyToManyField(User)
     def __str__(self):
         return self.name

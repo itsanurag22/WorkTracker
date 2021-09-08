@@ -8,16 +8,20 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import authentication, permissions
 from django.contrib.auth.models import User
+from .serializers import *
 from django.http import JsonResponse
 from decouple import config
-from tracker_app.models import *
+from .models import *
+from rest_framework import status, viewsets
 import requests
 from django.contrib.auth import authenticate, login
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_extensions.mixins import NestedViewSetMixin
 
 
 @api_view()
 def index(request):
-     return Response({"message": "{CLIENT_ID}"})
+     return Response({"message": "Welcome to the dashboard!!"})
 CLIENT_ID= config('CLIENT_ID')
 CLIENT_SECRET_ID= config('CLIENT_SECRET_ID')
 REDIRECT_URI=config("REDIRECT_URI")
@@ -54,4 +58,21 @@ def LoginResponse(request):
                raise Http404("Not a maintainer")
                # return HttpResponse(user_dict['person']['roles'][1]['role'])
 
-# Create your views here.
+class ProjectViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+     queryset=Project.objects.all()
+     serializer_class=ProjectSerializer
+     permission_classes=[IsAuthenticated]
+
+class ListViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+     queryset=List.objects.all()
+     serializer_class=ListSerializer
+     permission_classes=[IsAuthenticated]
+     # def get_queryset(self):
+     #    return List.objects.filter(domain=self.kwargs['project_pk'])
+
+class CardViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+     queryset=Card.objects.all()
+     serializer_class=CardSerializer
+     permission_classes=[IsAuthenticated]
+     # def get_queryset(self):
+     #    return Card.objects.filter(domain=self.kwargs['list_pk'])
