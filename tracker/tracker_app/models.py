@@ -34,7 +34,7 @@ class List(models.Model):
     def __str__(self):
         return self.name
     class Meta:
-        ordering = ['name']
+        ordering = ['id']
 
 class Card(models.Model):
     name = models.CharField(max_length=50)
@@ -46,4 +46,15 @@ class Card(models.Model):
     def __str__(self):
         return self.name
     class Meta:
-        ordering = ['name']
+        ordering = ['id']
+
+class Comment(models.Model):
+    body = models.CharField(max_length=200)
+    parent_card = models.ForeignKey(Card, on_delete=models.CASCADE, related_name="comments")
+    commentor = models.ForeignKey(User, on_delete=models.CASCADE, related_name="yourcomments")
+    def __str__(self):
+        return f"{self.body} commented by {self.commentor}"
+    class Meta:
+        ordering = ['id']
+        
+    

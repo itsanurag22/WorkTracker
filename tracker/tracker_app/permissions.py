@@ -48,6 +48,10 @@ class IsCardMemberOrReadOnly(permissions.BasePermission):
             return True
         return False
 
+class DontAllow(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return False
+
 
 
 

@@ -8,7 +8,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import authentication, permissions
 from django.contrib.auth.models import User
-from .serializers import *
+from .serializers import CommentSerializer, UserSerializer, ProjectSerializer, ListSerializer, CardSerializer
 from django.http import JsonResponse
 from decouple import config
 from .models import *
@@ -17,7 +17,7 @@ import requests
 from django.contrib.auth import authenticate, login
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_extensions.mixins import NestedViewSetMixin
-from .permissions import IsAdminCheck, IsProjectMemberOrReadOnly, IsUserAllowed, IsListMemberOrReadOnly, IsCardMemberOrReadOnly
+from .permissions import IsAdminCheck, IsProjectMemberOrReadOnly, IsUserAllowed, IsListMemberOrReadOnly, IsCardMemberOrReadOnly, DontAllow
 
 
 @api_view()
@@ -65,7 +65,15 @@ def LoginResponse(request):
 class UserViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      queryset=User.objects.all()
      serializer_class=UserSerializer
-     permission_classes=[IsAuthenticated, IsAdminCheck]
+     #permission_classes=[IsAuthenticated, IsAdminCheck]
+     def get_permissions(self):
+          if self.request.method == "GET":
+               self.permission_classes = [IsAuthenticated, IsUserAllowed] 
+          elif self.request.method == "POST" or self.request.method == "DELETE":
+               self.permission_classes = [DontAllow]
+          else:
+               self.permission_classes = [IsUserAllowed, IsAuthenticated, IsAdminCheck]
+          return super(UserViewSet, self).get_permissions()
 
 class ProjectViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      queryset=Project.objects.all()
@@ -75,13 +83,18 @@ class ProjectViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 class ListViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      queryset=List.objects.all()
      serializer_class=ListSerializer
-     permission_classes=[IsAuthenticated, IsListMemberOrReadOnly ]
+     permission_classes=[IsAuthenticated, IsListMemberOrReadOnly, IsUserAllowed ]
      # def get_queryset(self):
      #    return List.objects.filter(domain=self.kwargs['project_pk'])
 
 class CardViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      queryset=Card.objects.all()
      serializer_class=CardSerializer
-     permission_classes=[IsAuthenticated, IsCardMemberOrReadOnly]
+     permission_classes=[IsAuthenticated, IsCardMemberOrReadOnly, IsUserAllowed]
      # def get_queryset(self):
      #    return Card.objects.filter(domain=self.kwargs['list_pk'])
+
+class CommentViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+     queryset=Comment.objects.all()
+     serializer_class=CommentSerializer
+     permission_classes=[IsAuthenticated, IsUserAllowed]

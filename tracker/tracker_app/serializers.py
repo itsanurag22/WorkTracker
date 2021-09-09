@@ -1,12 +1,18 @@
+from django.db.models import fields
 from rest_framework import serializers
-from .models import User, Project, List, Card
+from .models import Comment, User, Project, List, Card
 
 
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields="__all__"
 
 class CardSerializer(serializers.ModelSerializer):
+    comments = CommentSerializer(many=True, read_only=True)
     class Meta:
         model = Card
-        fields = "__all__"
+        fields = ['id', 'name','description','created','due_date', 'parent_list', 'assignes', 'comments' ]
 
 class ListSerializer(serializers.ModelSerializer):
     cards = CardSerializer(many=True, read_only=True)
