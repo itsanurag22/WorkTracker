@@ -52,6 +52,11 @@ class DontAllow(permissions.BasePermission):
     def has_permission(self, request, view):
         return False
 
+class IsCommentor(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return obj.commentor == request.user
+
+
 
 
 

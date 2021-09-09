@@ -17,7 +17,7 @@ import requests
 from django.contrib.auth import authenticate, login
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_extensions.mixins import NestedViewSetMixin
-from .permissions import IsAdminCheck, IsProjectMemberOrReadOnly, IsUserAllowed, IsListMemberOrReadOnly, IsCardMemberOrReadOnly, DontAllow
+from .permissions import IsAdminCheck, IsCommentor, IsProjectMemberOrReadOnly, IsUserAllowed, IsListMemberOrReadOnly, IsCardMemberOrReadOnly, DontAllow
 
 
 @api_view()
@@ -54,7 +54,7 @@ def LoginResponse(request):
                get_user = User.objects.get(username=user_dict["username"])
                if get_user.banned == False:
                     login(request, get_user)
-                    return redirect("http://127.0.0.1:8200/tracker_app/dashboard/")
+                    return redirect("http://127.0.0.1:8200/tracker_app/projects/")
                else:
                     raise Http404("You are banned!!")
           # return JsonResponse(user_dict)
@@ -97,4 +97,11 @@ class CardViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 class CommentViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      queryset=Comment.objects.all()
      serializer_class=CommentSerializer
-     permission_classes=[IsAuthenticated, IsUserAllowed]
+     #permission_classes=[IsAuthenticated, IsUserAllowed]
+     def get_permissions(self):
+          if self.request.method =='PUT' or self.request.method == "PATCH" or self.request.method =="DELETE":
+               self.permission_classes = [IsUserAllowed, IsCommentor, IsAuthenticated]
+          else:
+               self.permission_classes = [IsUserAllowed, IsAuthenticated]
+
+          return super(CommentViewSet, self).get_permissions()
