@@ -9,12 +9,13 @@ class CardSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class ListSerializer(serializers.ModelSerializer):
+    cards = CardSerializer(many=True, read_only=True)
     class Meta:
         model = List
-        fields = "__all__"
+        fields = ['id', 'name', 'parent_project', 'cards']
 
 class ProjectSerializer(serializers.ModelSerializer):
-    creator = serializers.SlugRelatedField(read_only=True, slug_field="fullname")
+    #creator = serializers.SlugRelatedField(read_only=True, slug_field="fullname")
     lists = ListSerializer(many=True, read_only=True)
     class Meta:
         model = Project
