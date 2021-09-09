@@ -14,23 +14,23 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
     class Meta:
-        ordering = ['username']
+        ordering = ['id']
 
 
 class Project(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
     description = RichTextField()
-    creator = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="proj_creator")
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="creator_of")
     project_members = models.ManyToManyField(User)
     def __str__(self):
         return self.name
     class Meta:
-        ordering = ['name']
+        ordering = ['id']
 
 
 class List(models.Model):
     name = models.CharField(max_length=50)
-    parent_project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    parent_project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="lists")
     def __str__(self):
         return self.name
     class Meta:
@@ -41,7 +41,7 @@ class Card(models.Model):
     description = RichTextField()
     created = models.DateTimeField(auto_now_add=True)
     due_date = models.DateTimeField()
-    parent_list = models.ForeignKey(List, on_delete=models.CASCADE)
+    parent_list = models.ForeignKey(List, on_delete=models.CASCADE, related_name="cards")
     assignes = models.ManyToManyField(User)
     def __str__(self):
         return self.name

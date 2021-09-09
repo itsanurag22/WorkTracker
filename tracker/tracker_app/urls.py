@@ -3,7 +3,7 @@ from django import urls
 from django.urls import path, include
 from django.conf.urls import url
 from rest_framework_extensions.mixins import NestedViewSetMixin
-from .views import ListViewSet, LoginResponse, ProjectViewSet, index, login_redirect, CardViewSet
+from .views import ListViewSet, LoginResponse, ProjectViewSet, index, login_redirect, CardViewSet, UserViewSet
 from rest_framework.routers import DefaultRouter
 # from rest_framework_nested import routers
 from rest_framework_extensions.routers import ExtendedSimpleRouter
@@ -12,6 +12,7 @@ def_router = DefaultRouter()
 def_router.register(r'projects', ProjectViewSet)
 def_router.register(r'lists', ListViewSet)
 def_router.register(r'cards',CardViewSet)
+def_router.register(r'users',UserViewSet)
 # router = DefaultRouter()
 # router.register(r'projects', ProjectViewSet, basename='projects')
 

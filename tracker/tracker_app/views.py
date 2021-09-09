@@ -17,6 +17,7 @@ import requests
 from django.contrib.auth import authenticate, login
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_extensions.mixins import NestedViewSetMixin
+from .permissions import IsAdminCheck, IsProjectMemberOrReadOnly, IsUserAllowed, IsListMemberOrReadOnly, IsCardMemberOrReadOnly
 
 
 @api_view()
@@ -51,28 +52,36 @@ def LoginResponse(request):
                except User.DoesNotExist:
                     User.objects.create(username=user_dict["username"], fullname=user_dict["person"]["fullName"], email_address=user_dict["contactInformation"]["emailAddress"])
                get_user = User.objects.get(username=user_dict["username"])
-               login(request, get_user)
-               return redirect("http://127.0.0.1:8200/tracker_app/dashboard/")
+               if get_user.banned == False:
+                    login(request, get_user)
+                    return redirect("http://127.0.0.1:8200/tracker_app/dashboard/")
+               else:
+                    raise Http404("You are banned!!")
           # return JsonResponse(user_dict)
           else:
                raise Http404("Not a maintainer")
                # return HttpResponse(user_dict['person']['roles'][1]['role'])
 
+class UserViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+     queryset=User.objects.all()
+     serializer_class=UserSerializer
+     permission_classes=[IsAuthenticated, IsAdminCheck]
+
 class ProjectViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      queryset=Project.objects.all()
      serializer_class=ProjectSerializer
-     permission_classes=[IsAuthenticated]
+     permission_classes=[IsAuthenticated, IsProjectMemberOrReadOnly, IsUserAllowed ]
 
 class ListViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      queryset=List.objects.all()
      serializer_class=ListSerializer
-     permission_classes=[IsAuthenticated]
+     permission_classes=[IsAuthenticated, IsListMemberOrReadOnly ]
      # def get_queryset(self):
      #    return List.objects.filter(domain=self.kwargs['project_pk'])
 
 class CardViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      queryset=Card.objects.all()
      serializer_class=CardSerializer
-     permission_classes=[IsAuthenticated]
+     permission_classes=[IsAuthenticated, IsCardMemberOrReadOnly]
      # def get_queryset(self):
      #    return Card.objects.filter(domain=self.kwargs['list_pk'])
