@@ -27,7 +27,8 @@ ex_router = ExtendedSimpleRouter()
 (
 ex_router.register('projects', ProjectViewSet, basename='projects').register('lists', ListViewSet, basename='projects-lists', 
 parents_query_lookups=['parent_project']).register('cards', CardViewSet, basename='lists-cards', 
-parents_query_lookups=['parent_list__parent_project', 'parent_list'])
+parents_query_lookups=['parent_list__parent_project', 'parent_list']).register('comments', CommentViewSet, basename='cards-comments', 
+parents_query_lookups=['parent_card__parent_list__parent_project', 'parent_card__parent_list', 'parent_card'])
 )
 urlpatterns = [
     path('dashboard/', index),
