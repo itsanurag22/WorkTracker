@@ -8,17 +8,20 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields="__all__"
 
+
 class CardSerializer(serializers.ModelSerializer):
     comments = CommentSerializer(many=True, read_only=True)
     class Meta:
         model = Card
         fields = ['id', 'name','description','created','due_date', 'parent_list', 'assignes', 'comments' ]
 
+
 class ListSerializer(serializers.ModelSerializer):
     cards = CardSerializer(many=True, read_only=True)
     class Meta:
         model = List
         fields = ['id', 'name', 'parent_project', 'cards']
+
 
 class ProjectSerializer(serializers.ModelSerializer):
     #creator = serializers.SlugRelatedField(read_only=True, slug_field="fullname")
