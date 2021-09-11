@@ -63,6 +63,10 @@ def LoginResponse(request):
                # return HttpResponse(user_dict['person']['roles'][1]['role'])
 
 class UserViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+     """
+     Only admins can change the status of users in the app
+     Normal users can just view the members.
+     """
      queryset=User.objects.all()
      serializer_class=UserSerializer
      #permission_classes=[IsAuthenticated, IsAdminCheck]
@@ -76,6 +80,10 @@ class UserViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
           return super(UserViewSet, self).get_permissions()
 
 class ProjectViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+     """
+     Only project members can edit the project details
+     and any authenticated user can create or view the projects.
+     """
      queryset=Project.objects.all()
      serializer_class=ProjectSerializer
      #permission_classes=[IsAuthenticated, IsProjectMemberOrReadOnly, IsUserAllowed ]
@@ -90,6 +98,10 @@ class ProjectViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
          
 
 class ListViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+     """
+     Only the project members can edit the list details
+     any any authenticated user can view the lists.
+     """
      queryset=List.objects.all()
      serializer_class=ListSerializer
      permission_classes=[IsAuthenticated, IsListMemberOrReadOnly, IsUserAllowed ]
@@ -97,6 +109,10 @@ class ListViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      #    return List.objects.filter(domain=self.kwargs['project_pk'])
 
 class CardViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+     """
+     Only the project members can edit the card details
+     any any authenticated user can view the cards.
+     """
      queryset=Card.objects.all()
      serializer_class=CardSerializer
      permission_classes=[IsAuthenticated, IsCardMemberOrReadOnly, IsUserAllowed]
@@ -104,6 +120,10 @@ class CardViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      #    return Card.objects.filter(domain=self.kwargs['list_pk'])
 
 class CommentViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+     """
+     Only the commentor can edit their own comments
+     any any authenticated user can view the comments.
+     """
      queryset=Comment.objects.all()
      serializer_class=CommentSerializer
      #permission_classes=[IsAuthenticated, IsUserAllowed]
