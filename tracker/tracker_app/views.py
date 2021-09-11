@@ -78,7 +78,16 @@ class UserViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 class ProjectViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      queryset=Project.objects.all()
      serializer_class=ProjectSerializer
-     permission_classes=[IsAuthenticated, IsProjectMemberOrReadOnly, IsUserAllowed ]
+     #permission_classes=[IsAuthenticated, IsProjectMemberOrReadOnly, IsUserAllowed ]
+     def get_permissions(self):
+          if self.request.method == "POST":
+               self.permission_classes = [IsAuthenticated, IsUserAllowed]
+          else:
+               self.permission_classes = [IsAuthenticated, IsUserAllowed, IsProjectMemberOrReadOnly]
+
+
+          return super(ProjectViewSet, self).get_permissions()
+         
 
 class ListViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      queryset=List.objects.all()
