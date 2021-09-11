@@ -41,11 +41,25 @@ class IsListMemberOrReadOnly(permissions.BasePermission):
     Checks if the logged-in user is a project member
     List can be edited by project members only, rest all can view only.
     """
+    # def has_permission(self, request, view):
+    #     if request.method in permissions.SAFE_METHODS:
+    #         return True
+    #     for user in User.objects.all():
+    #         if request.user == user:
+    #             return True
+    #     for project in Project.objects.all().iterator():
+    #         if project.id == request.data.get('parent_project'):
+    #             for member in project.project_members.iterator():
+    #                 if request.user== member:
+    #                     return True
+    #     return False
+        
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
         for person in obj.parent_project.project_members.all():
             if person == request.user:
+                print(person)
                 return True
         if request.user == obj.parent_project.creator:
             return True
@@ -63,6 +77,21 @@ class IsCardMemberOrReadOnly(permissions.BasePermission):
             if person == request.user:
                 return True
         if request.user == obj.parent_list.parent_project.creator:
+            return True
+        return False
+
+class IsCommentMemberOrReadOnly(permissions.BasePermission):
+    """
+    Checks if the logged-in user is a project member
+    Card can be edited by project members only, rest all can view only.
+    """
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        for person in obj.parent_card.parent_list.parent_project.project_members.all():
+            if person == request.user:
+                return True
+        if request.user == obj.parent_card.parent_list.parent_project.creator:
             return True
         return False
 
