@@ -89,7 +89,7 @@ class UserViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
 class ProjectViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      """
-     Only project members can edit the project details
+     Only project members, admins can edit the project details
      and any authenticated user can create or view the projects.
      """
      queryset=Project.objects.all()
@@ -106,7 +106,7 @@ class ProjectViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
 class ListViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      """
-     Only the project members can edit the list details
+     Only the project members, admins can edit the list details
      any any authenticated user can view the lists.
      """
      queryset=List.objects.all()
@@ -133,7 +133,7 @@ class ListViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
 class CardViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      """
-     Only the project members can edit the card details
+     Only the project members, admins can edit the card details
      any any authenticated user can view the cards.
      """
      queryset=Card.objects.all()
@@ -167,8 +167,10 @@ class CommentViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      serializer_class=CommentSerializer
      #permission_classes=[IsAuthenticated, IsUserAllowed]
      def get_permissions(self):
-          if self.request.method =='PUT' or self.request.method == "PATCH" or self.request.method =="DELETE":
+          if self.request.method =='PUT' or self.request.method == "PATCH":
                self.permission_classes = [IsUserAllowed, IsCommentor, IsAuthenticated, IsCommentMemberOrReadOnly]
+          elif self.request.method =="DELETE":
+               self.permission_classes = [IsUserAllowed, IsAuthenticated, IsCommentor|IsAdminCheck]
           elif self.request.method == "POST":
                self.permission_classes = [IsUserAllowed, IsAuthenticated, IsCommentMemberOrReadOnly]
           else:

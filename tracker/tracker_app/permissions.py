@@ -24,7 +24,7 @@ class IsUserAllowed(permissions.BasePermission):
 class IsProjectMemberOrReadOnly(permissions.BasePermission):
     """
     Checks if the logged-in user is a project member
-    Project can be edited by project members only, rest all can view only.
+    Project can be edited by project members and admins only, rest all can view only.
     """
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
@@ -34,12 +34,14 @@ class IsProjectMemberOrReadOnly(permissions.BasePermission):
                 return True
         if request.user == obj.creator:
             return True
+        if request.user.admin_check:
+            return True
         return False
 
 class IsListMemberOrReadOnly(permissions.BasePermission):
     """
     Checks if the logged-in user is a project member
-    List can be edited by project members only, rest all can view only.
+    List can be edited by project members and admins only, rest all can view only.
     """
     # def has_permission(self, request, view):
     #     if request.method in permissions.SAFE_METHODS:
@@ -63,12 +65,14 @@ class IsListMemberOrReadOnly(permissions.BasePermission):
                 return True
         if request.user == obj.parent_project.creator:
             return True
+        if request.user.admin_check:
+            return True
         return False
 
 class IsCardMemberOrReadOnly(permissions.BasePermission):
     """
     Checks if the logged-in user is a project member
-    Card can be edited by project members only, rest all can view only.
+    Card can be edited by project members and admins only, rest all can view only.
     """
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
@@ -77,6 +81,8 @@ class IsCardMemberOrReadOnly(permissions.BasePermission):
             if person == request.user:
                 return True
         if request.user == obj.parent_list.parent_project.creator:
+            return True
+        if request.user.admin_check:
             return True
         return False
 
@@ -105,6 +111,7 @@ class DontAllow(permissions.BasePermission):
 class IsCommentor(permissions.BasePermission):
     """
     Checks if the logged-in user is the commentor of a comment
+    Comment can be deleted by commentor or admin
     Comment can be edited by commentor only.
     """
     def has_object_permission(self, request, view, obj):
