@@ -86,20 +86,20 @@ class IsCardMemberOrReadOnly(permissions.BasePermission):
             return True
         return False
 
-class IsCommentMemberOrReadOnly(permissions.BasePermission):
-    """
-    Checks if the logged-in user is a project member
-    Card can be edited by project members only, rest all can view only.
-    """
-    def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        for person in obj.parent_card.parent_list.parent_project.project_members.all():
-            if person == request.user:
-                return True
-        if request.user == obj.parent_card.parent_list.parent_project.creator:
-            return True
-        return False
+# class IsCommentMemberOrReadOnly(permissions.BasePermission):
+#     """
+#     Checks if the logged-in user is a project member
+#     Card can be edited by project members only, rest all can view only.
+#     """
+#     def has_object_permission(self, request, view, obj):
+#         if request.method in permissions.SAFE_METHODS:
+#             return True
+#         for person in obj.parent_card.parent_list.parent_project.project_members.all():
+#             if person == request.user:
+#                 return True
+#         if request.user == obj.parent_card.parent_list.parent_project.creator:
+#             return True
+#         return False
 
 class DontAllow(permissions.BasePermission):
     """
@@ -116,6 +116,12 @@ class IsCommentor(permissions.BasePermission):
     """
     def has_object_permission(self, request, view, obj):
         return obj.commentor == request.user
+
+class IsCommentorOrAdmin(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if obj.commentor == request.user or request.user.admin_check == True:
+            return True
+        return False
 
 
 

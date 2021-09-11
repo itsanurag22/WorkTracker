@@ -17,7 +17,7 @@ import requests
 from django.contrib.auth import authenticate, login
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_extensions.mixins import NestedViewSetMixin
-from .permissions import IsAdminCheck, IsCommentMemberOrReadOnly, IsCommentor, IsProjectMemberOrReadOnly, IsUserAllowed, IsListMemberOrReadOnly, IsCardMemberOrReadOnly, DontAllow
+from .permissions import IsAdminCheck, IsCommentorOrAdmin, IsCommentor, IsProjectMemberOrReadOnly, IsUserAllowed, IsListMemberOrReadOnly, IsCardMemberOrReadOnly, DontAllow
 
 
 @api_view()
@@ -98,7 +98,7 @@ class ProjectViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      def get_permissions(self):
           if self.request.method == "POST" or self.request.method =="GET":
                self.permission_classes = [IsAuthenticated, IsUserAllowed]
-          else:
+          elif self.request.method == "PUT" or self.request.method == "PATCH" or self.request.method == "DELETE":
                self.permission_classes = [IsAuthenticated, IsUserAllowed, IsProjectMemberOrReadOnly]
           return super(ProjectViewSet, self).get_permissions()
          
@@ -168,11 +168,9 @@ class CommentViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      #permission_classes=[IsAuthenticated, IsUserAllowed]
      def get_permissions(self):
           if self.request.method =='PUT' or self.request.method == "PATCH":
-               self.permission_classes = [IsUserAllowed, IsCommentor, IsAuthenticated, IsCommentMemberOrReadOnly]
+               self.permission_classes = [IsUserAllowed, IsCommentor, IsAuthenticated]
           elif self.request.method =="DELETE":
-               self.permission_classes = [IsUserAllowed, IsAuthenticated, IsCommentor|IsAdminCheck]
-          elif self.request.method == "POST":
-               self.permission_classes = [IsUserAllowed, IsAuthenticated, IsCommentMemberOrReadOnly]
+               self.permission_classes = [IsUserAllowed, IsAuthenticated, IsCommentorOrAdmin]
           else:
                self.permission_classes = [IsUserAllowed, IsAuthenticated]
 
