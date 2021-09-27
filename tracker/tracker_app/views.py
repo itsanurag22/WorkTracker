@@ -6,7 +6,7 @@ from django.template import loader
 from django.urls import path
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import authentication, permissions
+from rest_framework import authentication, permissions, serializers
 from django.contrib.auth.models import User
 from .serializers import CommentSerializer, UserSerializer, ProjectSerializer, ListSerializer, CardSerializer
 from django.http import JsonResponse
@@ -95,6 +95,9 @@ class ProjectViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      queryset=Project.objects.all()
      serializer_class=ProjectSerializer
      #permission_classes=[IsAuthenticated, IsProjectMemberOrReadOnly, IsUserAllowed ]
+     def perform_create(self, serializer):
+         serializer.save(creator = self.request.user)
+
      def get_permissions(self):
           if self.request.method == "POST" or self.request.method =="GET":
                self.permission_classes = [IsAuthenticated, IsUserAllowed]
@@ -166,6 +169,9 @@ class CommentViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      queryset=Comment.objects.all()
      serializer_class=CommentSerializer
      #permission_classes=[IsAuthenticated, IsUserAllowed]
+     def perform_create(self, serializer):
+         serializer.save(commentor = self.request.user)
+     
      def get_permissions(self):
           if self.request.method =='PUT' or self.request.method == "PATCH":
                self.permission_classes = [IsUserAllowed, IsCommentor, IsAuthenticated]
