@@ -1,5 +1,7 @@
+from django.contrib.auth.models import AbstractUser
 from requests.api import request
 from rest_framework import permissions
+import rest_framework
 from .serializers import *
 from .models import User
 
