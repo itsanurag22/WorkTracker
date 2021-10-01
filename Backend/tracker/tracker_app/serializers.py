@@ -13,7 +13,7 @@ class CardSerializer(serializers.ModelSerializer):
     comments = CommentSerializer(many=True, read_only=True)
     class Meta:
         model = Card
-        fields = ['id', 'name','description','created','due_date', 'parent_list', 'assignes', 'comments' ]
+        fields = ['id', 'name','description','created','due_date', 'parent_list', 'assignees', 'comments' ]
 
 
 class ListSerializer(serializers.ModelSerializer):
@@ -36,3 +36,13 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'fullname', 'admin_check', 'banned', 'creator_of']
+
+class UserProjectsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = ['id', 'name','description', 'creator', 'project_members']
+
+class UserCardsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Card
+        fields = ['id', 'name','description','created','due_date', 'parent_list', 'assignees' ]

@@ -1,7 +1,10 @@
 from django.db import models
 from ckeditor.fields import RichTextField
 from django.contrib.auth.models import AbstractUser
-
+from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
 
 class User(AbstractUser):
     username = models.CharField(max_length=50, unique=True)
@@ -22,7 +25,7 @@ class Project(models.Model):
     name = models.CharField(max_length=50, unique=True)
     description = RichTextField()
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="creator_of")
-    project_members = models.ManyToManyField(User)
+    project_members = models.ManyToManyField(User, blank=True)
 
     def __str__(self):
         return self.name
@@ -48,7 +51,7 @@ class Card(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     due_date = models.DateTimeField()
     parent_list = models.ForeignKey(List, on_delete=models.CASCADE, related_name="cards")
-    assignes = models.ManyToManyField(User)
+    assignees = models.ManyToManyField(User)
     
     def __str__(self):
         return self.name
@@ -68,4 +71,8 @@ class Comment(models.Model):
     class Meta:
         ordering = ['id']
         
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
     
