@@ -20,8 +20,8 @@ from django.contrib.auth import authenticate, get_user, login, logout
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_extensions.mixins import NestedViewSetMixin
 from .permissions import IsAdminCheck, IsCommentorOrAdmin, IsCommentor, IsProjectMemberOrReadOnly, IsUserAllowed, IsListMemberOrReadOnly, IsCardMemberOrReadOnly, DontAllow
-from rest_framework.authtoken.models import Token
-from django.middleware import csrf
+
+from django.middleware.csrf import get_token
 
 # @api_view(['GET'])
 # def index(request):
@@ -66,30 +66,38 @@ def LoginResponse(request):
 
                if get_user.banned == False:
                     login(request, get_user)
-                    user_token = Token.objects.get_or_create(user=get_user)[0]
-                    return redirect("http://127.0.0.1:8200/tracker_app/projects/")
+                    # user_token = Token.objects.get_or_create(user=get_user)[0]
+                    # return redirect("http://127.0.0.1:8200/tracker_app/projects/")
+                    response = Response({"csrftoken": get_token(request), "sessionid": request.session._session_key}, status=status.HTTP_200_OK)
+                    response['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+                    response['Access-Control-Allow-Credentials'] = 'true'
+                    return response
                else:
-                    response = Response('U are banned', status=status.HTTP_400_BAD_REQUEST)
+                    response = Response('You are banned', status=status.HTTP_400_BAD_REQUEST)
+                    response['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+                    response['Access-Control-Allow-Credentials'] = 'true'
                     return response
      
           else:
-               response = Response('Not a maintainer', status=status.HTTP_400_BAD_REQUEST)
+               response = Response('You are not a maintainer', status=status.HTTP_400_BAD_REQUEST)
+               response['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+               response['Access-Control-Allow-Credentials'] = 'true'
                return response
 
-@api_view(['GET'])
-def get_token(request):
-     get_user = request.user
-     auth_token = Token.objects.get(user=get_user)
-     response = Response({"csrftoken": csrf.get_token(request), "sessionid": request.session._session_key,"authtoken":auth_token.key}, status=status.HTTP_200_OK)
-     response['Access-Control-Allow-Origin'] = 'http://localhost:3000'
-     response['Access-Control-Allow-Credentials'] = 'true'
-     return response
+# @api_view(['GET'])
+# def get_token(request):
+#      get_user = request.user
+#      auth_token = Token.objects.get(user=get_user)
+#      response = Response({"csrftoken": get_token(request), "sessionid": request.session._session_key}, status=status.HTTP_200_OK)
+#      response['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+#      response['Access-Control-Allow-Credentials'] = 'true'
+#      return response
 
 @api_view(['GET'])
 def log_out(request):
-     get_user = request.user
-     auth_token = Token.objects.get(user=get_user)
-     request.user.auth_token.delete()
+     # get_user = request.user
+     # auth_token = Token.objects.get(user=get_user)
+     # request.user.auth_token.delete()
      logout(request)
      return Response("Logout successful", status=status.HTTP_200_OK)
 

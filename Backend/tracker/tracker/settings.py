@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'tracker_app',
     'corsheaders',
     'ckeditor',
-    'rest_framework.authtoken'
+    
 
 ]
 
