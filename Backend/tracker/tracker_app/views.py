@@ -69,19 +69,20 @@ def LoginResponse(request):
                     # user_token = Token.objects.get_or_create(user=get_user)[0]
                     # return redirect("http://127.0.0.1:8200/tracker_app/projects/")
                     response = Response({"csrftoken": get_token(request), "sessionid": request.session._session_key}, status=status.HTTP_200_OK)
+                    # response = Response("Login successful", status=status.HTTP_200_OK)
                     response['Access-Control-Allow-Origin'] = 'http://localhost:3000'
                     response['Access-Control-Allow-Credentials'] = 'true'
                     return response
                else:
                     response = Response('You are banned', status=status.HTTP_400_BAD_REQUEST)
-                    response['Access-Control-Allow-Origin'] = 'http://localhost:3000'
-                    response['Access-Control-Allow-Credentials'] = 'true'
+                    # response['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+                    # response['Access-Control-Allow-Credentials'] = 'true'
                     return response
      
           else:
                response = Response('You are not a maintainer', status=status.HTTP_400_BAD_REQUEST)
-               response['Access-Control-Allow-Origin'] = 'http://localhost:3000'
-               response['Access-Control-Allow-Credentials'] = 'true'
+               # response['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+               # response['Access-Control-Allow-Credentials'] = 'true'
                return response
 
 # @api_view(['GET'])
@@ -99,18 +100,25 @@ def log_out(request):
      # auth_token = Token.objects.get(user=get_user)
      # request.user.auth_token.delete()
      logout(request)
-     return Response("Logout successful", status=status.HTTP_200_OK)
-
+     response = Response("Login successful", status=status.HTTP_200_OK)
+     response['Access-Control-Allow-Origin'] = '*'
+     response['Access-Control-Allow-Credentials'] = 'true'
+     return response
 
 
 @api_view(['GET'])
 def login_check(request):
      if request.user.is_authenticated:
-          return Response({'loggedin': True}, status=status.HTTP_200_OK)
+          
+          response = Response({'loggedin': True}, status=status.HTTP_200_OK)
+          response['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+          response['Access-Control-Allow-Credentials'] = 'true'
+          return response
      else:
-          return Response({'loggedin': False}, status=status.HTTP_400_BAD_REQUEST)
-
-
+          response = Response({'loggedin': False}, status=status.HTTP_200_OK)
+          response['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+          response['Access-Control-Allow-Credentials'] = 'true'
+          return response
 
 class UserViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      """
@@ -119,7 +127,7 @@ class UserViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      """
      queryset=User.objects.all()
      serializer_class=UserSerializer
-     authentication_classes = [SessionAuthentication, TokenAuthentication]
+     authentication_classes = [SessionAuthentication]
      def get_permissions(self):
           if self.request.method == "GET":
                self.permission_classes = [IsAuthenticated, IsUserAllowed] 
@@ -138,7 +146,7 @@ class ProjectViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      """
      queryset=Project.objects.all()
      serializer_class=ProjectSerializer
-     authentication_classes=[TokenAuthentication, SessionAuthentication]
+     authentication_classes=[SessionAuthentication]
 
      def perform_create(self, serializer):
           serializer.validated_data['project_members'].append(self.request.user)
@@ -160,7 +168,7 @@ class ListViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      """
      queryset=List.objects.all()
      serializer_class=ListSerializer
-     authentication_classes=[TokenAuthentication, SessionAuthentication]
+     authentication_classes=[SessionAuthentication]
      def get_permissions(self):
           if self.request.method == "POST":
                try:
@@ -187,7 +195,7 @@ class CardViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      """
      queryset=Card.objects.all()
      serializer_class=CardSerializer
-     authentication_classes=[TokenAuthentication, SessionAuthentication]
+     authentication_classes=[SessionAuthentication]
      def get_permissions(self):
 
           if self.request.method == "POST":
@@ -214,7 +222,7 @@ class CommentViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      """
      queryset=Comment.objects.all()
      serializer_class=CommentSerializer
-     authentication_classes=[TokenAuthentication, SessionAuthentication]
+     authentication_classes=[SessionAuthentication]
   
      def perform_create(self, serializer):
          serializer.save(commentor = self.request.user)
@@ -233,6 +241,7 @@ class CommentViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 class UserProjectsViewSet(viewsets.ReadOnlyModelViewSet):
      serializer_class=UserProjectsSerializer
      permission_classes = [IsUserAllowed, IsAuthenticated]
+     authentication_classes=[SessionAuthentication]
      def get_queryset(self):
          user = self.request.user
          queryset = Project.objects.filter(project_members=user) | Project.objects.filter(creator=user)
@@ -242,6 +251,7 @@ class UserProjectsViewSet(viewsets.ReadOnlyModelViewSet):
 class UserCardsViewSet(viewsets.ReadOnlyModelViewSet):
      serializer_class= UserCardsSerializer
      permission_classes = [IsUserAllowed, IsAuthenticated]
+     authentication_classes=[SessionAuthentication]
      def get_queryset(self):
          user = self.request.user
          queryset = Card.objects.filter(assignees=user) 

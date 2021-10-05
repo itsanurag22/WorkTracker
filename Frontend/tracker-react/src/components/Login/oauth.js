@@ -10,7 +10,27 @@ class OAuth extends React.Component{
         super(props)
         this.state={isLoggedIn : false}
     }
+    // checkLoginStatus(){
+    //     axios.get('http://127.0.0.1:8200/tracker_app/checklogin', {withCredentials: false})
+    //     .then(response => {
+    //         console.log(response)
+    //         if(response.data.loggedin){
+    //             this.setState({isLoggedIn : true})
+    //             console.log("Hi")
+    //             window.location = "/dashboard"
+    //         }
+    //         else{
+    //             this.setState({isLoggedIn : false})
+    //         }
+    //     })
+    //     .catch(err => {
+            
+    //         console.log(err);
+    //     })
+
+    // }
     async componentDidMount(){
+        // this.checkLoginStatus()
         const params = new URLSearchParams(window.location.search);
         const auth = params.get("code");
 
@@ -24,7 +44,7 @@ class OAuth extends React.Component{
         })
         .catch(err => {
             this.setState({isLoggedIn : false})
-            console.log("error occured while authenticating");
+            console.log("error while authenticating");
         })
         
         
@@ -37,7 +57,7 @@ class OAuth extends React.Component{
         else{
             return <Progress/>
         }
-        }
+    }
 }
 
 export default OAuth;

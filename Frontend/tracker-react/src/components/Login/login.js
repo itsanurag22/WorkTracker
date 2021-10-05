@@ -11,7 +11,7 @@ function Login(){
 
     }
     return(
-        <Button onClick={handleClick}>Sign In</Button>
+        <Button onClick={handleClick}>Sign In with Channel-I</Button>
     );
 }
 export default Login;

@@ -4,7 +4,10 @@ import Box from '@mui/material/Box';
 
 export default function Progress() {
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box display="flex"
+    justifyContent="center"
+    alignItems="center"
+    minHeight="100vh">
       <CircularProgress />
     </Box>
   );
