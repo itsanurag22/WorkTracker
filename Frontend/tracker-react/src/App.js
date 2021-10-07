@@ -7,6 +7,7 @@ import axios from 'axios';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import Sidebar from './components/sidebar';
 import Titlebar from './components/titlebar';
+import { MyProjects } from './components/myprojects';
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Route exact path='/dashboard' component={Dashboard}/>
         {/* <Route exact path='/logout' component={Logout}/> */}
         <Route exact path='/titlebar' component={Titlebar}/>
+        <Route exact path='/myprojects' component={MyProjects}/>
       </Switch>
     </Router>
   );

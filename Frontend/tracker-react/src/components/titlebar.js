@@ -11,8 +11,6 @@ import Typography from '@mui/material/Typography';
 import cookie from 'react-cookies'
 import axios from "axios";
 
-axios.defaults.xsrfCookieName = 'csrftoken'
-axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 
 
 // const useStyles = makeStyles({
@@ -26,7 +24,7 @@ export default function Titlebar(){
     let history = useHistory();
     const logOut = () =>{
         
-        axios({url:'http://127.0.0.1:8200/tracker_app/logout', method:'GET', withCredentials: true})
+        axios.get('http://127.0.0.1:8200/tracker_app/logout',  {headers:{"X-CSRFToken":cookie.load("csrftoken")}})
         .then(response => {
             console.log(response)
             cookie.remove('csrftoken')

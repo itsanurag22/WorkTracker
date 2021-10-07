@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import axios from 'axios';
+
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.xsrfCookieName = "csrftoken";
 
 ReactDOM.render(
   <React.StrictMode>

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'tracker_app',
     'corsheaders',
     'ckeditor',
+    'rest_framework.authtoken',
     
 
 ]
@@ -68,7 +69,7 @@ MIDDLEWARE = [
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = False
-
+CSRF_COOKIE_NAME = "csrftoken"
 # CSRF_COOKIE_SECURE = True
 # SESSION_COOKIE_SECURE = True
 # CSRF_COOKIE_SAMESITE = 'None'
@@ -78,12 +79,13 @@ CORS_ORIGIN_ALLOW_ALL = False
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
+    'http://127.0.0.1:8200',
     
 ]
 
 CORS_ORIGIN_WHITELIST =[
     'http://localhost:3000',
-    'http://127.0.0.1:8000',
+    'http://127.0.0.1:8200',
     'http://127.0.0.1:3000',
 ]
 SESSION_ENGINE="django.contrib.sessions.backends.cached_db"

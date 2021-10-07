@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core'
+import { Divider, makeStyles } from '@material-ui/core'
 import Drawer from '@material-ui/core/Drawer'
 import Typography from '@material-ui/core/Typography'
 import { useHistory, useLocation } from 'react-router-dom'
@@ -8,7 +8,10 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 // import { AddCircleOutlineOutlined, SubjectOutlined } from '@material-ui/icons'
-
+import cookie from 'react-cookies'
+import axios from "axios";
+import { Button } from '@material-ui/core'
+import { Box } from '@mui/system'
 const drawerWidth = 240
 
 const useStyles = makeStyles(() => {
@@ -30,6 +33,7 @@ const useStyles = makeStyles(() => {
     active: {
       background: '#f4f4f4'
     },
+
     
   }
 })
@@ -48,19 +52,36 @@ export default function SideBar() {
     { 
       text: 'All Projects', 
       
-      path: '/dashboard' 
+      path: '/' 
     },
     { 
       text: 'My Projects', 
       
-      path: '/dashboard' 
+      path: '/myprojects' 
     },
     { 
       text: 'My Cards', 
       
-      path: '/dashboard' 
+      path: '/' 
     },
   ];
+  const logOut = () =>{
+    const mytoken = cookie.load("csrftoken")
+    axios.get('http://127.0.0.1:8200/tracker_app/logout',  {headers:{"Authorization": `Token ${mytoken}`}})
+    .then(response => {
+        console.log(response)
+        cookie.remove('csrftoken')
+        cookie.remove('sessionid')
+        cookie.remove('authtoken')
+        history.push('/')
+        
+        
+    })
+    .catch(err => {
+        
+        console.log(err);
+    })
+}
 
   return (
     <div className={classes.root}>
@@ -73,12 +94,12 @@ export default function SideBar() {
         classes={{ paper: classes.drawerPaper }}
         anchor="left"
       >
-        <div>
-          <Typography variant="h5">
+        <Box m={3}>
+          <Typography variant="h5" >
             WorkTracker
           </Typography>
-        </div>
-
+        </Box>
+    <Divider/>
         {/* links/list section */}
         <List>
           {menuItems.map((item) => (
@@ -93,6 +114,22 @@ export default function SideBar() {
             </ListItem>
           ))}
         </List>
+        <List style={{ marginTop: `auto` }} >
+    <ListItem>
+      <ListItemText>
+      <Button variant="contained" onClick={()=>{logOut()}}>
+              Logout
+            </Button>
+      </ListItemText>
+    </ListItem>
+  </List>
+        {/* <div className={classes.bottomPush}>
+          <Typography>
+            <Button variant="contained" onClick={()=>{logOut()}}>
+              Logout
+            </Button>
+          </Typography>
+        </div> */}
         
       </Drawer>
 

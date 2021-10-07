@@ -4,7 +4,7 @@ from django.urls import path, include
 from django.conf.urls import url
 from tracker_app import views
 from rest_framework_extensions.mixins import NestedViewSetMixin
-from .views import ListViewSet, LoginResponse, ProjectViewSet, UserCardsViewSet, login_check, login_redirect, CardViewSet, UserViewSet,UserProjectsViewSet, CommentViewSet, log_out
+from .views import ListViewSet, index, LoginResponse, ProjectViewSet, UserCardsViewSet, login_check, login_redirect, CardViewSet, UserViewSet,UserProjectsViewSet, CommentViewSet, log_out
 from rest_framework.routers import DefaultRouter
 from rest_framework_extensions.routers import ExtendedSimpleRouter
 app_name='tracker_app'
@@ -36,7 +36,7 @@ urlpatterns = [
     path('logout/', log_out),
     path('checklogin/', login_check),
     #path('get_token/', get_token)
-    #path('index/', index)
+    path('index/', index)
 ]
 urlpatterns += def_router.urls
 urlpatterns += ex_router.urls

@@ -61,10 +61,11 @@ class Card(models.Model):
         
 
 class Comment(models.Model):
-    body = models.CharField(max_length=200)
+    
     parent_card = models.ForeignKey(Card, on_delete=models.CASCADE, related_name="comments")
     commentor = models.ForeignKey(User, on_delete=models.CASCADE, related_name="yourcomments")
-
+    body = models.CharField(max_length=200)
+    
     def __str__(self):
         return f"{self.body} commented by {self.commentor}"
 

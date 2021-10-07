@@ -2,6 +2,11 @@ from django.db.models import fields
 from rest_framework import serializers
 from .models import Comment, User, Project, List, Card
 
+class UserSerializer(serializers.ModelSerializer):
+    creator_of = serializers.StringRelatedField(many=True)
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'fullname', 'admin_check', 'banned', 'creator_of']
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,6 +16,8 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class CardSerializer(serializers.ModelSerializer):
     comments = CommentSerializer(many=True, read_only=True)
+    assignees = serializers.SlugRelatedField(many=True, queryset=User.objects.all(), slug_field='fullname')
+
     class Meta:
         model = Card
         fields = ['id', 'name','description','created','due_date', 'parent_list', 'assignees', 'comments' ]
@@ -26,23 +33,26 @@ class ListSerializer(serializers.ModelSerializer):
 class ProjectSerializer(serializers.ModelSerializer):
     #creator = serializers.SlugRelatedField(read_only=True, slug_field="fullname")
     lists = ListSerializer(many=True, read_only=True)
+    creator = UserSerializer(read_only = True)
+    # project_members = UserSerializer(many=True)
+    project_members = serializers.SlugRelatedField(many=True, slug_field='fullname', queryset=User.objects.all()) 
+    
     class Meta:
         model = Project
         fields = ['id', 'name','description', 'creator', 'project_members', 'lists']
 
 
-class UserSerializer(serializers.ModelSerializer):
-    creator_of = serializers.StringRelatedField(many=True)
-    class Meta:
-        model = User
-        fields = ['id', 'username', 'fullname', 'admin_check', 'banned', 'creator_of']
+
 
 class UserProjectsSerializer(serializers.ModelSerializer):
+    project_members = serializers.SlugRelatedField(many=True, slug_field='fullname', queryset=User.objects.all())
+    creator = UserSerializer(read_only = True)
     class Meta:
         model = Project
         fields = ['id', 'name','description', 'creator', 'project_members']
 
 class UserCardsSerializer(serializers.ModelSerializer):
+    assignees = serializers.SlugRelatedField(many=True, queryset=User.objects.all(), slug_field='fullname')
     class Meta:
         model = Card
         fields = ['id', 'name','description','created','due_date', 'parent_list', 'assignees' ]
