@@ -2,30 +2,29 @@ import { Button, Card, CardActions, CardContent, CardHeader, Divider, Typography
 import { Box } from '@mui/system';
 import React from 'react';
 
-const ProjectCard=(props)=> {
-    const project = props.projState
+const CardShow=(props)=> {
+    const card = props.cardState
 
     return (
         <Box>
-            <Card sx={{ minWidth: 250 }} variant="outlined"  key={project.id}>
-                <CardHeader title={project.name}/>
+            <Card sx={{ minWidth: 250 }} variant="outlined"  key={card.id}>
+                <CardHeader title={card.name}/>
                 <Divider/>
                 <CardContent>
                     {/* <Typography variant="h5" component="div" >
                      {project.name}
                     </Typography> */}
-                    
-                    <Typography  gutterBottom><Box sx={{ fontWeight: 'bold'}} mt={1} >Description:</Box>
-                    
+                    <Typography  gutterBottom noWrap><Box sx={{ fontWeight: 'bold'}} mt={1} >Description :</Box>
+                    {card.description}
                     </Typography>
-                    <div>
-                    <Typography sx={{ fontSize: 14 }} noWrap  dangerouslySetInnerHTML={{__html: project.description}}>
                     
+                    <Typography  gutterBottom><Box sx={{ fontWeight: 'bold'}} mt={1} >Created on :</Box>
+                    {card.created}
                     </Typography>
-                    </div>
-                    <Typography  gutterBottom><Box sx={{ fontWeight: 'bold'}} mt={1} >Created By:</Box>
-                    {project.creator.fullname}
+                    <Typography  gutterBottom><Box sx={{ fontWeight: 'bold'}} mt={1} >Due :</Box>
+                    {card.due_date}
                     </Typography>
+
                     {/* <Typography >
                     Created by: {project.creator.fullname}
                     </Typography> */}
@@ -38,4 +37,4 @@ const ProjectCard=(props)=> {
     );
 }
 
-export default ProjectCard;   
+export default CardShow;   

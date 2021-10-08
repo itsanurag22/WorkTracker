@@ -9,6 +9,7 @@ import SideBar from './sidebar';
 import { makeStyles } from "@material-ui/core/styles";
 import { ClassNames } from '@emotion/react';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
+import CardShow from './cardshow';
 
 const useStyles = makeStyles({
   cardGrid: {
@@ -18,17 +19,17 @@ const useStyles = makeStyles({
   
 });
 
-export function MyProjects() {
+export function MyCards() {
         const mytoken = cookie.load("authtoken")
-        const [projData, setProjData] = React.useState([])
+        const [cardData, setCardData] = React.useState([])
         const drawerWidth = 240;
         const classes = useStyles();
 
-        async function MyProjectData(){
-        axios.get('http://127.0.0.1:8200/tracker_app/user_projects/',  {headers:{"Content-Type": "application/json", "Authorization": `Token ${mytoken}`}})
+        async function MyCardData(){
+        axios.get('http://127.0.0.1:8200/tracker_app/user_cards/',  {headers:{"Content-Type": "application/json", "Authorization": `Token ${mytoken}`}})
         .then(response => {
             console.log(response.data)
-            setProjData(response.data)
+            setCardData(response.data)
 
             
             
@@ -39,7 +40,7 @@ export function MyProjects() {
         })
         }
         React.useEffect(()=>{
-            MyProjectData()
+            MyCardData()
         }, [])
         
     
@@ -52,7 +53,7 @@ export function MyProjects() {
                 Back
             </Button> */}
             <Typography  variant="h6" component="h2" color="primary" align="center">
-                MY PROJECTS
+                MY CARDS
             </Typography>
         
         </Box>
@@ -60,9 +61,9 @@ export function MyProjects() {
             <Container disableGutters>
                 <Box sx={{pl:2}}>
                 <Grid container spacing={4} xs={12} sx={{m:0}} >
-                    {projData.map(proj => (
-                        <Grid item xs={12} md={6} lg={4} key={proj.id}>
-                            <ProjectCard projState ={proj}/>
+                    {cardData.map(card => (
+                        <Grid item xs={12} md={6} lg={4} key={card.id}>
+                            <CardShow cardState ={card}/>
 
                         </Grid>
                         

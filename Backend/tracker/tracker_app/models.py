@@ -51,7 +51,7 @@ class Card(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     due_date = models.DateTimeField()
     parent_list = models.ForeignKey(List, on_delete=models.CASCADE, related_name="cards")
-    assignees = models.ManyToManyField(User)
+    assignees = models.ManyToManyField(User, blank=True)
     
     def __str__(self):
         return self.name

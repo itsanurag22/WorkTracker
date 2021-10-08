@@ -52,7 +52,7 @@ export default function SideBar() {
     { 
       text: 'All Projects', 
       
-      path: '/' 
+      path: '/allprojects' 
     },
     { 
       text: 'My Projects', 
@@ -62,12 +62,12 @@ export default function SideBar() {
     { 
       text: 'My Cards', 
       
-      path: '/' 
+      path: '/mycards' 
     },
   ];
   const logOut = () =>{
     const mytoken = cookie.load("csrftoken")
-    axios.get('http://127.0.0.1:8200/tracker_app/logout',  {headers:{"Authorization": `Token ${mytoken}`}})
+    axios.get('http://127.0.0.1:8200/tracker_app/logout',  {headers:{"Content-Type": "application/json", "Authorization": `Token ${mytoken}`}})
     .then(response => {
         console.log(response)
         cookie.remove('csrftoken')

@@ -18,14 +18,14 @@ const useStyles = makeStyles({
   
 });
 
-export function MyProjects() {
+export function AllProjects() {
         const mytoken = cookie.load("authtoken")
         const [projData, setProjData] = React.useState([])
         const drawerWidth = 240;
         const classes = useStyles();
 
-        async function MyProjectData(){
-        axios.get('http://127.0.0.1:8200/tracker_app/user_projects/',  {headers:{"Content-Type": "application/json", "Authorization": `Token ${mytoken}`}})
+        async function AllProjectData(){
+        axios.get('http://127.0.0.1:8200/tracker_app/projects/',  {headers:{"Content-Type": "application/json", "Authorization": `Token ${mytoken}`}})
         .then(response => {
             console.log(response.data)
             setProjData(response.data)
@@ -39,7 +39,7 @@ export function MyProjects() {
         })
         }
         React.useEffect(()=>{
-            MyProjectData()
+            AllProjectData()
         }, [])
         
     
@@ -52,7 +52,7 @@ export function MyProjects() {
                 Back
             </Button> */}
             <Typography  variant="h6" component="h2" color="primary" align="center">
-                MY PROJECTS
+                ALL PROJECTS
             </Typography>
         
         </Box>

@@ -179,11 +179,11 @@ class ListViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
                try:
                     project_id = int(self.request.data.get("parent_project"))
                     projects = Project.objects.get(id=project_id)
-                    for member in projects.project_members.all():
-                         if self.request.user == member:
-                              self.permission_classes = [IsAuthenticated, IsUserAllowed]
-                         else:
-                              self.permission_classes = [DontAllow]
+                    if(self.request.user in projects.project_members.all()):
+                         self.permission_classes = [IsAuthenticated, IsUserAllowed]
+                    else:
+                         self.permission_classes = [DontAllow]
+
                except:
                     self.permission_classes=[IsAuthenticated, IsListMemberOrReadOnly, IsUserAllowed ]
                #self.permission_classes = [DontAllow]
@@ -207,11 +207,11 @@ class CardViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
                try:    
                     list_id = int(self.request.data.get("parent_list"))
                     list_ob = List.objects.get(id=list_id)
-                    for member in list_ob.parent_project.project_members.all():
-                         if self.request.user == member:
-                              self.permission_classes = [IsAuthenticated, IsUserAllowed]
-                         else:
-                              self.permission_classes = [DontAllow]
+                    if(self.request.user in list_ob.parent_project.project_members.all()):
+                         self.permission_classes = [IsAuthenticated, IsUserAllowed]
+                    else:
+                         self.permission_classes = [DontAllow]
+     
                except:
                     self.permission_classes = [IsAuthenticated, IsUserAllowed, IsCardMemberOrReadOnly]
           else:
