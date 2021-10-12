@@ -1,9 +1,11 @@
 import { Button, Card, CardActions, CardContent, CardHeader, Divider, Typography } from '@material-ui/core';
 import { Box } from '@mui/system';
 import React from 'react';
+import { useHistory } from 'react-router';
 
 const CardShow=(props)=> {
     const card = props.cardState
+    const history = useHistory();
 
     return (
         <Box>
@@ -25,12 +27,19 @@ const CardShow=(props)=> {
                     {card.due_date}
                     </Typography>
 
-                    {/* <Typography >
-                    Created by: {project.creator.fullname}
-                    </Typography> */}
+                    
                 </CardContent>
                 <CardActions >
-                    <Button size="small" variant="contained" color="primary"  disableElevation>Open</Button>
+                    <Button  
+                    variant="contained" 
+                    disableElevation
+                    style={{backgroundColor: '#3F72AF', color: '#F9F7F7'}}
+                    onClick={(e)=>{
+                        e.preventDefault();
+                        
+                        history.push(`/cards/${card.id}`) 
+                        }}
+                    >Open</Button>
                 </CardActions>
         </Card>
         </Box>

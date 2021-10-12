@@ -40,6 +40,7 @@ class OAuth extends React.Component{
             cookie.save('csrftoken', response.data['csrftoken'], {path:"/"})
             cookie.save('sessionid', response.data['sessionid'], {path:"/"})
             cookie.save('authtoken', response.data['authtoken'], {path:"/"})
+            cookie.save('userid', response.data['userid'], {path:"/"})
             this.setState({isLoggedIn : true})
             
         })

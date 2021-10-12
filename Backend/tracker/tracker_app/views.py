@@ -57,36 +57,58 @@ def LoginResponse(request):
           response_token = request_token.json()
           user_data  = requests.get(USERDATA_URL, headers={"Authorization": "{} {}".format(response_token["token_type"], response_token["access_token"])})
           user_dict = user_data.json()
-          if(user_dict["person"]["roles"][1]["role"] == "Maintainer" and user_dict["person"]["roles"][1]["activeStatus"] == "ActiveStatus.IS_ACTIVE"):
-               try:
+
+          isMaintainer=False
+          isActive=False
+
+          for item in user_dict['person']['roles']:
+               if item['activeStatus'] == 'ActiveStatus.IS_ACTIVE':
+                    isActive = True
+               if item['role'] == 'Maintainer':
+                    isMaintainer = True
+
+          if(isMaintainer):
+               if(isActive):
+                    try:
+                         get_user = User.objects.get(username=user_dict["username"])
+
+                    except :
+                         User.objects.create(username=user_dict["username"], fullname=user_dict["person"]["fullName"], email_address=user_dict["contactInformation"]["emailAddress"], banned=False, admin_check=False)
+          
                     get_user = User.objects.get(username=user_dict["username"])
 
-               except User.DoesNotExist:
-                    User.objects.create(username=user_dict["username"], fullname=user_dict["person"]["fullName"], email_address=user_dict["contactInformation"]["emailAddress"])
-               get_user = User.objects.get(username=user_dict["username"])
-
-               if get_user.banned == False:
-                    login(request, get_user)
-                    user_token = Token.objects.get_or_create(user=get_user)[0]
-                    # return redirect("http://127.0.0.1:8200/tracker_app/projects/")
-                    response = Response({"csrftoken": get_token(request), "sessionid": request.session._session_key, "authtoken":user_token.key}, status=status.HTTP_200_OK)
-                    # response = Response("Login successful", status=status.HTTP_200_OK)
-                    # res = Response()
-                    # res.set_cookie(key='csrftoken', value=get_token(request))
-                    response['Access-Control-Allow-Origin'] = 'http://localhost:3000'
-                    response['Access-Control-Allow-Credentials'] = 'true'
-                    return response
+                    if get_user.banned == False:
+                         login(request, get_user)
+                         user_token = Token.objects.get_or_create(user=get_user)[0]
+                         # return redirect("http://127.0.0.1:8200/tracker_app/projects/")
+                         response = Response({"csrftoken": get_token(request), "sessionid": request.session._session_key, "authtoken":user_token.key, "userid":get_user.id}, status=status.HTTP_200_OK)
+                         # response = Response("Login successful", status=status.HTTP_200_OK)
+                         # res = Response()
+                         # res.set_cookie(key='csrftoken', value=get_token(request))
+                         response['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+                         response['Access-Control-Allow-Credentials'] = 'true'
+                         return response
+                    else:
+                         response = Response('You are banned', status=status.HTTP_400_BAD_REQUEST)
+                         response['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+                         response['Access-Control-Allow-Credentials'] = 'true'
+                         return response
                else:
-                    response = Response('You are banned', status=status.HTTP_400_BAD_REQUEST)
+                    response = Response('You are not active member', status=status.HTTP_406_NOT_ACCEPTABLE)
                     response['Access-Control-Allow-Origin'] = 'http://localhost:3000'
                     response['Access-Control-Allow-Credentials'] = 'true'
                     return response
      
           else:
-               response = Response('You are not a maintainer', status=status.HTTP_400_BAD_REQUEST)
+               response = Response('You are not a maintainer', status=status.HTTP_403_FORBIDDEN)
                response['Access-Control-Allow-Origin'] = 'http://localhost:3000'
                response['Access-Control-Allow-Credentials'] = 'true'
                return response
+     else:
+          response = Response('Error', status=status.HTTP_401_UNAUTHORIZED)
+          response['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+          response['Access-Control-Allow-Credentials'] = 'true'
+          return response
 
           
 
@@ -249,8 +271,18 @@ class UserProjectsViewSet(viewsets.ReadOnlyModelViewSet):
      authentication_classes=[SessionAuthentication, TokenAuthentication]
      def get_queryset(self):
          user = self.request.user
-         queryset = Project.objects.filter(project_members=user) | Project.objects.filter(creator=user)
+         queryset = Project.objects.filter(project_members=user) 
          return queryset
+
+class CurrentUserViewset(viewsets.ReadOnlyModelViewSet):
+     serializer_class=UserSerializer
+     permission_classes = [IsUserAllowed, IsAuthenticated]
+     authentication_classes=[SessionAuthentication, TokenAuthentication]
+     def get_queryset(self):
+         user = self.request.user
+         queryset = User.objects.get(project_members=user) 
+         return queryset
+
 
 
 class UserCardsViewSet(viewsets.ReadOnlyModelViewSet):

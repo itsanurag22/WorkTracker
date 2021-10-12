@@ -10,8 +10,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import { ClassNames } from '@emotion/react';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import Title from './title';
-import { Link } from 'react-router-dom';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import MemberCard from './membercard';
 
 const useStyles = makeStyles({
   cardGrid: {
@@ -21,17 +21,17 @@ const useStyles = makeStyles({
   
 });
 
-export function MyProjects() {
+export function Members() {
         const mytoken = cookie.load("authtoken")
-        const [projData, setProjData] = React.useState([])
+        const [membersData, setMembersData] = React.useState([])
         const drawerWidth = 240;
         const classes = useStyles();
 
-        async function MyProjectData(){
-        axios.get('http://127.0.0.1:8200/tracker_app/user_projects/',  {headers:{"Content-Type": "application/json", "Authorization": `Token ${mytoken}`}})
+        async function MembersData(){
+        axios.get('http://127.0.0.1:8200/tracker_app/users/',  {headers:{"Content-Type": "application/json", "Authorization": `Token ${mytoken}`}})
         .then(response => {
             console.log(response.data)
-            setProjData(response.data)
+            setMembersData(response.data)
 
             
             
@@ -42,7 +42,7 @@ export function MyProjects() {
         })
         }
         React.useEffect(()=>{
-            MyProjectData()
+            MembersData()
         }, [])
         
     
@@ -50,18 +50,17 @@ export function MyProjects() {
   return (
     <Box>
         <SideBar/>
-        <Title title="My Projects"/>
+        <Title title="Members"/>
         
         <Box sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}>
             <Container disableGutters>
                 <Box sx={{pl:2}}>
                 <Grid container spacing={4} xs={12} sx={{m:0}} >
-                    {projData.map(proj => (
-                        <Grid item xs={12} md={6} lg={4} key={proj.id}>
-                            <ProjectCard projState ={proj}/>
+                    {membersData.map(member => (
+                        <Grid item xs={12} md={6} lg={3} key={member.id}>
+                            <MemberCard memberState ={member}/>
 
                         </Grid>
-                        
 
                     ))}
                 </Grid>

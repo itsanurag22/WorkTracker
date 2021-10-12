@@ -25,6 +25,8 @@ class CardSerializer(serializers.ModelSerializer):
 
 class ListSerializer(serializers.ModelSerializer):
     cards = CardSerializer(many=True, read_only=True)
+    
+    # parent_project = ProjectSerializer(many=True, read_only=True)
     class Meta:
         model = List
         fields = ['id', 'name', 'parent_project', 'cards']

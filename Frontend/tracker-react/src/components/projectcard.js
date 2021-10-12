@@ -1,9 +1,13 @@
 import { Button, Card, CardActions, CardContent, CardHeader, Divider, Typography } from '@material-ui/core';
 import { Box } from '@mui/system';
 import React from 'react';
+import { useHistory } from 'react-router';
 
 const ProjectCard=(props)=> {
-    const project = props.projState
+    const project = props.projState;
+    // const users = props.userState;
+    const history = useHistory();
+
 
     return (
         <Box>
@@ -11,9 +15,6 @@ const ProjectCard=(props)=> {
                 <CardHeader title={project.name}/>
                 <Divider/>
                 <CardContent>
-                    {/* <Typography variant="h5" component="div" >
-                     {project.name}
-                    </Typography> */}
                     
                     <Typography  gutterBottom><Box sx={{ fontWeight: 'bold'}} mt={1} >Description:</Box>
                     
@@ -23,15 +24,32 @@ const ProjectCard=(props)=> {
                     
                     </Typography>
                     </div>
+                    {/* {users.map(user => {
+                                    if(user.id === project.creator){
+                                        return (
+                                            <Typography  gutterBottom><Box sx={{ fontWeight: 'bold'}} mt={1} >Created By:</Box>
+                                                {user.fullname}
+                                            </Typography>
+                                        )
+                    }})} */}
                     <Typography  gutterBottom><Box sx={{ fontWeight: 'bold'}} mt={1} >Created By:</Box>
                     {project.creator.fullname}
                     </Typography>
-                    {/* <Typography >
-                    Created by: {project.creator.fullname}
-                    </Typography> */}
+                    
                 </CardContent>
                 <CardActions >
-                    <Button size="small" variant="contained" color="primary"  disableElevation>Open</Button>
+                    <Button  
+                    variant="contained" 
+                    style={{backgroundColor: '#3F72AF', color: '#F9F7F7'}}  
+                    disableElevation 
+                    onClick={(e)=>{
+                        e.preventDefault();
+                        
+                        history.push(`/projects/${project.id}`) 
+                        }}
+                    >
+                        Open
+                    </Button>
                 </CardActions>
         </Card>
         </Box>

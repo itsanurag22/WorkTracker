@@ -9,6 +9,9 @@ import SideBar from './sidebar';
 import { makeStyles } from "@material-ui/core/styles";
 import { ClassNames } from '@emotion/react';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
+import Title from './title';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { Link } from 'react-router-dom'
 
 const useStyles = makeStyles({
   cardGrid: {
@@ -21,6 +24,7 @@ const useStyles = makeStyles({
 export function AllProjects() {
         const mytoken = cookie.load("authtoken")
         const [projData, setProjData] = React.useState([])
+        const [users, setUsers] = React.useState([])
         const drawerWidth = 240;
         const classes = useStyles();
 
@@ -38,8 +42,22 @@ export function AllProjects() {
             console.log(err);
         })
         }
+        async function UserData(){
+            axios.get('http://127.0.0.1:8200/tracker_app/users/',  {headers:{"Content-Type": "application/json", "Authorization": `Token ${mytoken}`, accept:"application/json"}})
+            .then(res => {
+                console.log(res.data)
+                setUsers(res.data)
+    
+            })
+            .catch(err => {
+                
+                console.log(err);
+            })
+        }
+        
         React.useEffect(()=>{
-            AllProjectData()
+            AllProjectData();
+            UserData();
         }, [])
         
     
@@ -47,14 +65,11 @@ export function AllProjects() {
   return (
     <Box>
         <SideBar/>
-        <Box sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px`, mt:3, mb:3}}>
-            {/* <Button variant="outlined" startIcon={<ArrowBackRoundedIcon/>}>
-                Back
-            </Button> */}
-            <Typography  variant="h6" component="h2" color="primary" align="center">
-                ALL PROJECTS
-            </Typography>
-        
+        <Title title="All Projects"/>
+        <Box mb={2} mr={3}>
+            <Grid container justifyContent="flex-end">
+            <Link style={{ textDecoration: 'none' }} to="/createproject"><Button  variant="contained" style={{backgroundColor: '#3F72AF', color: '#F9F7F7'}}  startIcon={<AddCircleOutlineIcon/>} disableElevation>Create a project</Button></Link>
+            </Grid>
         </Box>
         <Box sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}>
             <Container disableGutters>
@@ -62,7 +77,7 @@ export function AllProjects() {
                 <Grid container spacing={4} xs={12} sx={{m:0}} >
                     {projData.map(proj => (
                         <Grid item xs={12} md={6} lg={4} key={proj.id}>
-                            <ProjectCard projState ={proj}/>
+                            <ProjectCard projState ={proj} />
 
                         </Grid>
                         

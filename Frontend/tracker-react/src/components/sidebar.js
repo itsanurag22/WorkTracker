@@ -16,12 +16,18 @@ const drawerWidth = 240
 
 const useStyles = makeStyles(() => {
   return {
+    
     page: {
       background: '#f9f9f9',
       width: '100%',
 
     },
-    root: {
+    listitem:{
+      '&:hover': {
+        backgroundColor: '#FFFFFF',
+      },
+    },
+    root2: {
       display: 'flex',
     },
     drawer: {
@@ -29,9 +35,13 @@ const useStyles = makeStyles(() => {
     },
     drawerPaper: {
       width: drawerWidth,
+      backgroundColor: "#DBE2EF"
     },
     active: {
-      background: '#f4f4f4'
+      background: '#ffffff',
+      '&:hover': {
+        backgroundColor: '#ffffff',
+      },
     },
 
     
@@ -52,7 +62,7 @@ export default function SideBar() {
     { 
       text: 'All Projects', 
       
-      path: '/allprojects' 
+      path: '/projects' 
     },
     { 
       text: 'My Projects', 
@@ -64,27 +74,16 @@ export default function SideBar() {
       
       path: '/mycards' 
     },
+    { 
+      text: 'Members', 
+      
+      path: '/members' 
+    },
   ];
-  const logOut = () =>{
-    const mytoken = cookie.load("csrftoken")
-    axios.get('http://127.0.0.1:8200/tracker_app/logout',  {headers:{"Content-Type": "application/json", "Authorization": `Token ${mytoken}`}})
-    .then(response => {
-        console.log(response)
-        cookie.remove('csrftoken')
-        cookie.remove('sessionid')
-        cookie.remove('authtoken')
-        history.push('/')
-        
-        
-    })
-    .catch(err => {
-        
-        console.log(err);
-    })
-}
+  
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root2}>
       {/* app bar */}
 
       {/* side drawer */}
@@ -94,9 +93,9 @@ export default function SideBar() {
         classes={{ paper: classes.drawerPaper }}
         anchor="left"
       >
-        <Box m={3}>
+        <Box m={2}>
           <Typography variant="h5" >
-            WorkTracker
+            <strong>WorkTracker</strong>
           </Typography>
         </Box>
     <Divider/>
@@ -104,17 +103,18 @@ export default function SideBar() {
         <List>
           {menuItems.map((item) => (
             <ListItem 
+              
               button 
               key={item.text} 
               onClick={() => history.push(item.path)}
-              className={location.pathname === item.path ? classes.active : null}
+              className={location.pathname === item.path ? classes.active : classes.listitem}
             >
               
               <ListItemText primary={item.text} />
             </ListItem>
           ))}
         </List>
-        <List style={{ marginTop: `auto` }} >
+        {/* <List style={{ marginTop: `auto` }} >
     <ListItem>
       <ListItemText>
       <Button variant="contained" onClick={()=>{logOut()}}>
@@ -122,14 +122,7 @@ export default function SideBar() {
             </Button>
       </ListItemText>
     </ListItem>
-  </List>
-        {/* <div className={classes.bottomPush}>
-          <Typography>
-            <Button variant="contained" onClick={()=>{logOut()}}>
-              Logout
-            </Button>
-          </Typography>
-        </div> */}
+  </List> */}
         
       </Drawer>
 
