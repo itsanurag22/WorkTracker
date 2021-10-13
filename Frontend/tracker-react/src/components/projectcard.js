@@ -45,7 +45,7 @@ const ProjectCard=(props)=> {
                     onClick={(e)=>{
                         e.preventDefault();
                         
-                        history.push(`/projects/${project.id}`) 
+                        history.push(`/projects/${project.id}/`) 
                         }}
                     >
                         Open
