@@ -52,12 +52,12 @@ export default function SideBar() {
   const classes = useStyles()
   const history = useHistory()
   const location = useLocation()
-
+  const user_id = cookie.load("userid")
   const menuItems = [
     { 
-      text: 'Dashboard', 
+      text: 'My Profile', 
       
-      path: '/dashboard' 
+      path: `/members/${user_id}/` 
     },
     { 
       text: 'All Projects', 

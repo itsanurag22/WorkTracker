@@ -11,6 +11,8 @@ import Title from './title';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
 
 export function Lists() {
     const {p_id}= useParams()
@@ -83,8 +85,23 @@ export function Lists() {
         <Box>
             <SideBar/>
             <Title title="Project Lists"/>
-            <Box mb={2} mr={3}>
-                <Grid container justifyContent="flex-end">
+            <Box mb={2} mr={3} sx={{  ml: `${drawerWidth}px` }}>    
+                <Grid container justifyContent="flex-end" spacing={2}>
+                <Grid item pl={5}>
+                <Button
+                variant="outlined"
+                startIcon={<ArrowBackIcon/>}
+                onClick={(e)=>{
+                    e.preventDefault();
+                    
+                    history.push(`/projects/${p_id}/`) 
+                    }}
+                >
+                    Parent project
+                </Button>
+                </Grid>
+                <Grid item xs/>
+                <Grid item>
                     <Button  
                     variant="contained" 
                     style={{backgroundColor: '#3F72AF', color: '#F9F7F7'}}  
@@ -94,6 +111,7 @@ export function Lists() {
                     >
                         Create a list
                     </Button>
+                    </Grid>
                 </Grid>
             </Box>
             <Box sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }} 

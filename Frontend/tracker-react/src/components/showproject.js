@@ -15,6 +15,8 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
 
 export function ShowProject() {
     const drawerWidth = 240;
@@ -170,8 +172,22 @@ export function ShowProject() {
         <Box>
             <SideBar/>
             <Title title="Project Details"/>
-            <Box mb={2} mr={3}>
+            <Box mb={2} mr={3} sx={{  ml: `${drawerWidth}px` }}>
                 <Grid container justifyContent="flex-end" spacing={2}>
+                <Grid item pl={5}>
+                <Button
+                variant="outlined"
+                startIcon={<ArrowBackIcon/>}
+                onClick={(e)=>{
+                    e.preventDefault();
+                    
+                    history.push('/projects') 
+                    }}
+                >
+                    All projects
+                </Button>
+                </Grid>
+                <Grid item xs/>
                 <Grid item >
                     <Button  
                     variant="contained" 

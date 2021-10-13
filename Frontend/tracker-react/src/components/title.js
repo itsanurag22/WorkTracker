@@ -12,17 +12,18 @@ import { useHistory, useLocation } from 'react-router-dom';
 
 export default function Title(props) {
   const history = useHistory()
+  const mytoken = cookie.load("authtoken")
 
     const drawerWidth = 240;
     const logOut = () =>{
-      const mytoken = cookie.load("csrftoken")
+      
       axios.get('http://127.0.0.1:8200/tracker_app/logout',  {headers:{"Content-Type": "application/json", "Authorization": `Token ${mytoken}`}})
       .then(response => {
           console.log(response)
-          cookie.remove('csrftoken')
-          cookie.remove('sessionid')
-          cookie.remove('authtoken')
-          cookie.remove('userid')
+          cookie.remove('csrftoken', { path: '/' })
+          cookie.remove('sessionid', { path: '/' })
+          cookie.remove('authtoken', { path: '/' })
+          cookie.remove('userid', { path: '/' })
           history.push('/')
           
           

@@ -18,6 +18,7 @@ import { Lists } from './components/lists';
 import { ListDetail } from './components/listdetail';
 import { ListCards } from './components/cards';
 import { CardDetails } from './components/carddetails';
+import { MemberDetails } from './components/memberdetails';
 
 
 function App() {
@@ -39,7 +40,8 @@ function App() {
         <Route exact path='/projects/:p_id/lists' component={Lists}/>
         <Route exact path='/projects/:p_id/lists/:l_id' component={ListDetail}/>
         <Route exact path='/projects/:p_id/lists/:l_id/cards' component={ListCards}/>
-        <Route exact path='/cards/:c_id' component={CardDetails}/>
+        <Route exact path='/projects/:p_id/lists/:l_id/cards/:c_id' component={CardDetails}/>
+        <Route exact path='/members/:m_id/' component={MemberDetails}/>
       </Switch>
     </Router>
   );

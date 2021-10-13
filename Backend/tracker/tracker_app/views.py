@@ -127,7 +127,7 @@ def log_out(request):
      # auth_token = Token.objects.get(user=get_user)
      # request.user.auth_token.delete()
      logout(request)
-     response = Response("Login successful", status=status.HTTP_200_OK)
+     response = Response("Logout successful", status=status.HTTP_200_OK)
      response['Access-Control-Allow-Origin'] = 'http://localhost:3000'
      response['Access-Control-Allow-Credentials'] = 'true'
      return response

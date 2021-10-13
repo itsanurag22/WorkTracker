@@ -14,7 +14,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CancelIcon from '@mui/icons-material/Cancel';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 export function ListDetail() {
     const drawerWidth = 240;
@@ -143,8 +143,22 @@ export function ListDetail() {
         <Box>
             <SideBar/>
             <Title title="List Details"/>
-            <Box mb={2} mr={3}>
+            <Box mb={2} mr={3} sx={{  ml: `${drawerWidth}px` }}>
                 <Grid container justifyContent="flex-end" spacing={2}>
+                <Grid item pl={5}>
+                <Button
+                variant="outlined"
+                startIcon={<ArrowBackIcon/>}
+                onClick={(e)=>{
+                    e.preventDefault();
+                    
+                    history.push(`/projects/${p_id}/lists/`) 
+                    }}
+                >
+                    Project lists
+                </Button>
+                </Grid>
+                <Grid item xs/>
                 <Grid item >
                     <Button  
                     variant="contained" 

@@ -5,7 +5,7 @@ from .models import Comment, User, Project, List, Card
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'fullname', 'admin_check', 'banned', 'email_address', 'display_picture']
+        fields = ['id', 'username', 'fullname', 'admin_check', 'banned', 'email_address', 'display_picture', 'creator_of']
         
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -24,22 +24,22 @@ class CardSerializer(serializers.ModelSerializer):
 
 
 class ListSerializer(serializers.ModelSerializer):
-    cards = CardSerializer(many=True, read_only=True)
+    # cards = CardSerializer(many=True, read_only=True)
     
     # parent_project = ProjectSerializer(many=True, read_only=True)
     class Meta:
         model = List
-        fields = ['id', 'name', 'parent_project', 'cards']
+        fields = ['id', 'name', 'parent_project']
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    lists = ListSerializer(many=True, read_only=True)
+    # lists = ListSerializer(many=True, read_only=True)
     creator = UserSerializer(read_only = True)
     # project_members = serializers.SlugRelatedField(many=True, slug_field='fullname', queryset=User.objects.all()) 
     
     class Meta:
         model = Project
-        fields = ['id', 'name','description', 'creator', 'project_members', 'lists']
+        fields = ['id', 'name','description', 'creator', 'project_members']
 
 
 

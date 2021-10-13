@@ -1,11 +1,39 @@
 import { Button, Card, CardActions, CardContent, CardHeader, Divider, Typography } from '@material-ui/core';
 import { Box } from '@mui/system';
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router';
+// import Moment from 'react-moment';
+import moment from 'moment';
+import axios from 'axios';
+import cookie from 'react-cookies'
 
-const CardShow=(props)=> {
+
+export function CardShow(props) {
+    const mytoken = cookie.load("authtoken")
     const card = props.cardState
+    const l_id = card.parent_list
     const history = useHistory();
+    const created = card.created
+    const due = card.due_date
+    const [parentData, setParentData] = useState([])
+
+    async function ParentListData(){
+        axios.get(`http://127.0.0.1:8200/tracker_app/lists/${l_id}/`,  {headers:{"Content-Type": "application/json", "Authorization": `Token ${mytoken}`}})
+        .then(response => {
+            console.log(response.data)
+            setParentData(response.data)
+
+            
+            
+        })
+        .catch(err => {
+            
+            console.log(err);
+        })
+        }
+        React.useEffect(()=>{
+            ParentListData();
+        }, [])
 
     return (
         <Box>
@@ -16,15 +44,20 @@ const CardShow=(props)=> {
                     {/* <Typography variant="h5" component="div" >
                      {project.name}
                     </Typography> */}
-                    <Typography  gutterBottom noWrap><Box sx={{ fontWeight: 'bold'}} mt={1} >Description :</Box>
-                    {card.description}
+                    <Typography  gutterBottom><Box sx={{ fontWeight: 'bold'}} mt={1} >Description:</Box>
+                    
                     </Typography>
+                    <div>
+                    <Typography sx={{ fontSize: 14 }} noWrap  dangerouslySetInnerHTML={{__html: card.description}}>
+                    
+                    </Typography>
+                    </div>
                     
                     <Typography  gutterBottom><Box sx={{ fontWeight: 'bold'}} mt={1} >Created on :</Box>
-                    {card.created}
+                    {moment(created.slice(0, created.length -1)).format("MMMM Do YYYY, h:mm a")}
                     </Typography>
                     <Typography  gutterBottom><Box sx={{ fontWeight: 'bold'}} mt={1} >Due :</Box>
-                    {card.due_date}
+                    {moment(due.slice(0, due.length -1)).utc(true).format("MMMM Do YYYY, h:mm a")}
                     </Typography>
 
                     
@@ -37,13 +70,13 @@ const CardShow=(props)=> {
                     onClick={(e)=>{
                         e.preventDefault();
                         
-                        history.push(`/cards/${card.id}`) 
+                        history.push(`/projects/${parentData.parent_project}/lists/${l_id}/cards/${card.id}`) 
                         }}
                     >Open</Button>
                 </CardActions>
         </Card>
         </Box>
     );
-}
+};
 
 export default CardShow;   
