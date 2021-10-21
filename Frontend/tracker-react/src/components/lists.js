@@ -21,11 +21,13 @@ export function Lists() {
     const drawerWidth = 240;
     const history = useHistory();
     const [createList, setCreateList]=React.useState(false)
+    const [createErr, setCreateErr]=React.useState(false)
     const [name, setName] = React.useState('')
     const projid=p_id;
     const handleNameChange =(e)=>{
             
         setName(e.target.value)
+        setCreateErr(false)
     }
     const handleFormSubmit = (e) => {
         e.preventDefault()
@@ -43,6 +45,10 @@ export function Lists() {
 
         })
         .catch(err => {
+            if(err.response.status === 403){
+                setCreateErr(true)
+                console.log("Restricted")
+              }
             
             console.log(err);
         })
@@ -120,6 +126,7 @@ export function Lists() {
             justifyContent="center"
             alignItems="center"
             >
+            {createErr?<Box sx={{fontWeight: 'bold',color: '#D72323'}}>* Not Allowed! Only admin and project members can create a list</Box>: <Box></Box>}
             {createList?
             
             <Box sx={{width: '50%', p:2, border:1,borderRadius:2, mb:4}} >

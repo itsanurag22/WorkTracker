@@ -33,6 +33,8 @@ export function ShowProject() {
     const [name, setName] = React.useState('')
     const [deleteOpen, setDeleteOpen] = React.useState(false);
     const [users, setUsers] = React.useState([])
+    const [updateErr, setUpdateErr] = React.useState(false)
+    const [deleteErr, setDeleteErr] = React.useState(false)
     const mytoken = cookie.load("authtoken")
     const history = useHistory();
     const [updateProj, setUpdateProj]=React.useState(false)
@@ -95,6 +97,7 @@ export function ShowProject() {
     const handleNameChange =(e)=>{
             
         setName(e.target.value)
+        setUpdateErr(false)
     };
 
 
@@ -112,11 +115,16 @@ export function ShowProject() {
         axios.patch(`http://127.0.0.1:8200/tracker_app/projects/${p_id}/`,data,  {headers:{"Content-Type": "application/json", "Authorization": `Token ${mytoken}`}})
         .then(response => {
             console.log("nacho bc")
+
             history.go(0) 
 
         })
         .catch(err => {
-            
+
+            if(err.response.status === 403){
+                setUpdateErr(true)
+                console.log("Restricted")
+              }
             console.log(err);
         })
 
@@ -223,7 +231,7 @@ export function ShowProject() {
                 {"Are you sure you want to delete this project?"}
                 </DialogTitle>
                 <DialogContent>
-                <DialogContentText id="description">
+                <DialogContentText id="description" >
                     {errDelete? "Only admins and project members can delete project" : ""}
                 </DialogContentText>
                 </DialogContent>
@@ -242,6 +250,7 @@ export function ShowProject() {
             justifyContent="center"
             alignItems="center"
             >
+            {updateErr?<Box sx={{fontWeight: 'bold',color: '#D72323'}}>* Not Allowed! Only admin and project members can update project details</Box>: <Box></Box>}   
             {updateProj?
             
             <Box sx={{width: '50%', p:2, border:1,borderRadius:2, mb:4}} >
@@ -257,7 +266,7 @@ export function ShowProject() {
             label="Name" 
             variant="outlined" 
             fullWidth
-            
+            required
             value={name}
             onChange={handleNameChange}        
             />
@@ -271,10 +280,11 @@ export function ShowProject() {
                 // You can store the "editor" and use when it is needed.
                 console.log('Editor is ready to use!', editor);
             }}
-            data=""
+            data={updateDes}
             onChange={(event, editor) => {
                 const data = editor.getData();
                 setUpdateDes(data);
+                setUpdateErr(false)
                 
             }}
             />
@@ -292,16 +302,19 @@ export function ShowProject() {
                         autoWidth
                         
                         value={updateMembers}
-                        onChange = {(e) => 
+                        onChange = {(e) => {
                             setUpdateMembers(e.target.value)
-                        }
+                            setUpdateErr(false)
+
+                        }}
                         >
                         {users.map(user => {
+                            if(user.id !== creator.id){
                             return (
                                 <MenuItem key={user.id} value={user.id}>
                                 {user.fullname}
                                 </MenuItem>
-                            )
+                            )}
                         })}
                         </Select>
                 </FormControl>

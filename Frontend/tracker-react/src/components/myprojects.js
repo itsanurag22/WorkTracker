@@ -56,14 +56,16 @@ export function MyProjects() {
             <Container disableGutters>
                 <Box sx={{pl:2}}>
                 <Grid container spacing={4} xs={12} sx={{m:0}} >
-                    {projData.map(proj => (
+                    {projData.length>0 ?
+                    projData.map(proj => (
                         <Grid item xs={12} md={6} lg={4} key={proj.id}>
                             <ProjectCard projState ={proj}/>
 
                         </Grid>
                         
 
-                    ))}
+                    ))
+                    : <Box sx={{m:2}}><Typography>You are not a part of any projects.</Typography></Box>}
                 </Grid>
                 </Box>
             </Container>

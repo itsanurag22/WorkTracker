@@ -41,6 +41,8 @@ export function ListCards() {
         const [createCard, setCreateCard]=React.useState(false)
         const [assignees, setAssignees] = React.useState([])
         const [users, setUsers] = React.useState([])
+        const [createErr, setCreateErr]=React.useState(false)
+        const [projMembers, setProjMembers] = React.useState([])
         const history = useHistory();
         const handleCreateCard = (e) => {
             e.preventDefault()
@@ -75,7 +77,10 @@ export function ListCards() {
 
         })
         .catch(err => {
-            
+            if(err.response.status === 403){
+                setCreateErr(true)
+                console.log("Restricted")
+              }
             console.log(err);
         })
 
@@ -110,6 +115,18 @@ export function ListCards() {
                 console.log(err);
             })
         }
+        async function ProjMembersData(){
+            axios.get(`http://127.0.0.1:8200/tracker_app/projects/${p_id}/`,  {headers:{"Content-Type": "application/json", "Authorization": `Token ${mytoken}`}})
+            .then(response => {
+                console.log(response.data)
+                setProjMembers(response.data.project_members)
+    
+            })
+            .catch(err => {
+                
+                console.log(err);
+            })
+        }
         async function ListCardData(){
         axios.get(`http://127.0.0.1:8200/tracker_app/projects/${p_id}/lists/${l_id}/cards`,  {headers:{"Content-Type": "application/json", "Authorization": `Token ${mytoken}`}})
         .then(response => {
@@ -127,6 +144,7 @@ export function ListCards() {
         React.useEffect(()=>{
             ListCardData();
             UserData();
+            ProjMembersData();
         }, [])
         
     
@@ -172,6 +190,7 @@ export function ListCards() {
         justifyContent="center"
         alignItems="center"
         >
+        {createErr?<Box sx={{fontWeight: 'bold',color: '#D72323'}}>* Not Allowed! Only admin and project members can create a card</Box>: <Box></Box>}
         {createCard?
             
         <Box sx={{width: '50%', p:2, border:1,borderRadius:2, mb:4}} >
@@ -228,13 +247,23 @@ export function ListCards() {
                             setAssignees(e.target.value)
                         }
                         >
-                        {users.map(user => {
-                            return (
-                                <MenuItem key={user.id} value={user.id}>
-                                {user.fullname}
-                                </MenuItem>
+                        {
+                        projMembers.map(function(member,index){
+                            return(
+                                    users.map(function(user,index2){
+                                    if(user.id===member){
+                                        return(
+
+                                            <MenuItem key={user.id} value={user.id}>
+                                            {user.fullname}
+                                            </MenuItem>
+                                            
+                                        )
+                                    }
+                                })
                             )
-                        })}
+                        })}  
+                        
                         </Select>
                 </FormControl>
             </Box>

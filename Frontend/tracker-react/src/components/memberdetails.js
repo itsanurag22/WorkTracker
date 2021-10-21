@@ -1,5 +1,5 @@
 // @flow
-import { Button, Card, CardActions, CardContent, CardHeader, Divider, Grid, Typography } from '@material-ui/core';
+import { Button, Card, CardActions, CardContent, CardHeader, Divider, Grid, makeStyles, Typography } from '@material-ui/core';
 import { Box } from '@mui/system';
 import axios from 'axios';
 import * as React from 'react';
@@ -12,6 +12,10 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import BlockIcon from '@mui/icons-material/Block';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { blue } from '@material-ui/core/colors';
+
+
+
 
 export function MemberDetails(){
     const drawerWidth = 240;
@@ -23,6 +27,8 @@ export function MemberDetails(){
     const [banned, setBanned] = React.useState(false)
     const mytoken = cookie.load("authtoken")
     const history = useHistory();
+    
+
 
     const handleAdminChange = async(state) =>{
         const data = {
@@ -181,8 +187,11 @@ export function MemberDetails(){
                 <CardHeader title='HI THERE!'/>
                 <Divider/>
                 <CardContent>
-                {userDetails.admin_check? <Grid container justifyContent="flex-end"><Box sx={{fontWeight: 'bold',color: '#FF9A3C'}}> Admin</Box></Grid> : 
-                [(userDetails.banned? <Grid container justifyContent="flex-end"><Box sx={{fontWeight: 'bold',color: '#D72323'}}>Restricted</Box></Grid>:<Grid container justifyContent="flex-end"><Box sx={{fontWeight: 'bold',color: '#1FAB89'}}>Normal User</Box></Grid>)]}
+                <Grid container justifyContent="flex-end"> 
+                 
+                {userDetails.admin_check? <Box sx={{fontWeight: 'bold',color: '#FF9A3C'}}> Admin</Box> : 
+                [(userDetails.banned? <Box sx={{fontWeight: 'bold',color: '#D72323'}}>Restricted</Box>:<Box sx={{fontWeight: 'bold',color: '#1FAB89'}}>Normal User</Box>)]}
+                </Grid>   
                     <Typography  gutterBottom><Box sx={{ fontWeight: 'bold'}} mt={1} >Username:</Box>
                     {userDetails.username}<br/>
 

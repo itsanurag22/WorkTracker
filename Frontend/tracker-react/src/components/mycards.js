@@ -54,14 +54,16 @@ export function MyCards() {
             <Container disableGutters>
                 <Box sx={{pl:2}}>
                 <Grid container spacing={4} xs={12} sx={{m:0}} >
-                    {cardData.map(card => (
+                    {cardData.length>0 ?
+                    cardData.map(card => (
                         <Grid item xs={12} md={6} lg={4} key={card.id}>
                             <CardShow cardState ={card}/>
 
                         </Grid>
                         
 
-                    ))}
+                    ))
+                : <Box sx={{m:2}}><Typography>No Cards assigned to you</Typography></Box>}
                 </Grid>
                 </Box>
             </Container>

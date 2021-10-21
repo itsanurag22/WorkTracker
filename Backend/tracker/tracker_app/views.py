@@ -5,7 +5,7 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponse, Http404
 from django.template import loader
 from django.urls import path
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework import authentication, permissions, serializers
 from django.contrib.auth.models import User
@@ -122,10 +122,11 @@ def LoginResponse(request):
 #      return response
 
 @api_view(['GET'])
+@authentication_classes([SessionAuthentication,TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def log_out(request):
-     # get_user = request.user
-     # auth_token = Token.objects.get(user=get_user)
-     # request.user.auth_token.delete()
+     auth_token = Token.objects.get(user=request.user)
+     auth_token.delete()
      logout(request)
      response = Response("Logout successful", status=status.HTTP_200_OK)
      response['Access-Control-Allow-Origin'] = 'http://localhost:3000'

@@ -26,6 +26,8 @@ export function CardDetails() {
     const [cardData, setCardData] = React.useState([])
     const [users, setUsers] = React.useState([])
     const [members, setMembers] = React.useState([])
+    const [projMembers, setProjMembers] = React.useState([])
+
     const [name, setName] = React.useState('')
     const mytoken = cookie.load("authtoken")
     const history = useHistory();
@@ -36,7 +38,7 @@ export function CardDetails() {
     const [updateMembers, setUpdateMembers] = React.useState([])
     const [cardCreate, setCardCreate] = React.useState('')
     const [cardDue, setCardDue] = React.useState('')
-
+    const [updateErr, setUpdateErr] = React.useState(false)
     const [updateDue, setUpdateDue] = React.useState(new Date())
 
 
@@ -109,7 +111,10 @@ export function CardDetails() {
 
         })
         .catch(err => {
-            
+            if(err.response.status === 403){
+                setUpdateErr(true)
+                console.log("Restricted")
+              }
             console.log(err);
         })
 
@@ -150,17 +155,30 @@ export function CardDetails() {
             console.log(err);
         })
     }
+    async function ProjMembersData(){
+        axios.get(`http://127.0.0.1:8200/tracker_app/projects/${p_id}/`,  {headers:{"Content-Type": "application/json", "Authorization": `Token ${mytoken}`, accept:"application/json"}})
+        .then(res => {
+            console.log(res.data)
+            setProjMembers(res.data.project_members)
+
+        })
+        .catch(err => {
+            
+            console.log(err);
+        })
+    }
     
     React.useEffect(()=>{
         CardDetail();
         UserData();
+        ProjMembersData();
     }, [])
 
 
     return (
         <Box>
             <SideBar/>
-            <Title title="Project Details"/>
+            <Title title="Card Details"/>
             <Box mb={2} mr={3} sx={{  ml: `${drawerWidth}px` }}>
                 <Grid container justifyContent="flex-end" spacing={2}>
                 <Grid item pl={5}>
@@ -197,7 +215,7 @@ export function CardDetails() {
                     disableElevation
                     onClick={handleDeleteOpen}
                     >
-                        Delete Project
+                        Delete Card
                     </Button>
                 </Grid>
                 </Grid>
@@ -229,6 +247,7 @@ export function CardDetails() {
             justifyContent="center"
             alignItems="center"
             >
+            {updateErr?<Box sx={{fontWeight: 'bold',color: '#D72323'}}>* Not Allowed! Only admin and project members can update card details</Box>: <Box></Box>}   
             {updateCard?
             
             <Box sx={{width: '50%', p:2, border:1,borderRadius:2, mb:4}} >
@@ -257,10 +276,10 @@ export function CardDetails() {
             <CKEditor
             editor={ ClassicEditor }
             onReady={(editor) => {
-                // You can store the "editor" and use when it is needed.
+               
                 console.log('Editor is ready to use!', editor);
             }}
-            data=""
+            data={updateDes}
             onChange={(event, editor) => {
                 const data = editor.getData();
                 setUpdateDes(data);
@@ -285,13 +304,23 @@ export function CardDetails() {
                             setUpdateMembers(e.target.value)
                         }
                         >
-                        {users.map(user => {
-                            return (
-                                <MenuItem key={user.id} value={user.id}>
-                                {user.fullname}
-                                </MenuItem>
+                        {
+                        projMembers.map(function(member,index){
+                            return(
+                                    users.map(function(user,index2){
+                                    if(user.id===member){
+                                        return(
+
+                                            <MenuItem key={user.id} value={user.id}>
+                                            {user.fullname}
+                                            </MenuItem>
+                                            
+                                        )
+                                    }
+                                })
                             )
                         })}
+                        
                         </Select>
                 </FormControl>
             </Box>
@@ -376,20 +405,20 @@ export function CardDetails() {
 
                     </Typography>
                     {
-                                        members.map(function(member,index){
-                                            return(
-                                                    users.map(function(user,index2){
-                                                    if(user.id===member){
-                                                        return(
-                
-                                                                <Link style={{ textDecoration: 'none' }} to={`/members/${user.id}`}><Typography ><li>{user.fullname}</li></Typography></Link>
-                                                            // </div>
-                                                            
-                                                        )
-                                                    }
-                                                })
-                                            )
-                                        })}
+                        members.map(function(member,index){
+                            return(
+                                    users.map(function(user,index2){
+                                    if(user.id===member){
+                                        return(
+
+                                                <Link style={{ textDecoration: 'none' }} to={`/members/${user.id}`}><Typography ><li>{user.fullname}</li></Typography></Link>
+                                            // </div>
+                                            
+                                        )
+                                    }
+                                })
+                            )
+                        })}
                     
                    
                     

@@ -29,6 +29,7 @@ export function ListDetail() {
     const mytoken = cookie.load("authtoken")
     const history = useHistory();
     const [updateName, setUpdateName]=React.useState('')
+    const [updateErr, setUpdateErr]=React.useState(false)
     const projid = p_id;
     const handleUpdateList = (e) => {
         e.preventDefault()
@@ -89,7 +90,10 @@ export function ListDetail() {
 
         })
         .catch(err => {
-            
+            if(err.response.status === 403){
+                setUpdateErr(true)
+                console.log("Restricted")
+              }
             console.log(err);
         })
 
@@ -211,6 +215,7 @@ export function ListDetail() {
             justifyContent="center"
             alignItems="center"
             >
+            {updateErr?<Box sx={{fontWeight: 'bold',color: '#D72323'}}>* Not Allowed! Only admin and project members can update list details</Box>: <Box></Box>}   
             {updateList?
             
             <Box sx={{width: '50%', p:2, border:1,borderRadius:2, mb:4}} >

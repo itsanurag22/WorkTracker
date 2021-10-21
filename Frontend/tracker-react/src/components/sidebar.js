@@ -12,8 +12,14 @@ import cookie from 'react-cookies'
 import axios from "axios";
 import { Button } from '@material-ui/core'
 import { Box } from '@mui/system'
-const drawerWidth = 240
+import WorkIcon from '@mui/icons-material/Work';
+import ContentPasteSharpIcon from '@mui/icons-material/ContentPasteSharp';
+import { autocompleteClasses } from '@mui/material'
+import ContentPasteSharp from '@mui/icons-material/ContentPasteSharp'
 
+
+
+const drawerWidth = 240
 const useStyles = makeStyles(() => {
   return {
     
@@ -43,6 +49,11 @@ const useStyles = makeStyles(() => {
         backgroundColor: '#ffffff',
       },
     },
+    largeIcon: {
+      width: 30,
+      height: 30,
+    },
+  
 
     
   }
@@ -54,11 +65,7 @@ export default function SideBar() {
   const location = useLocation()
   const user_id = cookie.load("userid")
   const menuItems = [
-    { 
-      text: 'My Profile', 
-      
-      path: `/members/${user_id}/` 
-    },
+    
     { 
       text: 'All Projects', 
       
@@ -74,6 +81,12 @@ export default function SideBar() {
       
       path: '/mycards' 
     },
+    { 
+      text: 'My Profile', 
+      
+      path: `/members/${user_id}/` 
+    },
+    
     { 
       text: 'Members', 
       
@@ -93,10 +106,20 @@ export default function SideBar() {
         classes={{ paper: classes.drawerPaper }}
         anchor="left"
       >
-        <Box m={2}>
-          <Typography variant="h5" >
+        <Box mt={2} mb={2} ml={3.75} mr={3.75}>
+        <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            justifyContent:'space-between'
+        }}>
+            <ContentPasteSharp className={classes.largeIcon}/>
+            <Typography variant="h5" >
             <strong>WorkTracker</strong>
+            
           </Typography>
+        </div> 
+          
         </Box>
     <Divider/>
         {/* links/list section */}
