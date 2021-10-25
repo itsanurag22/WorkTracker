@@ -125,6 +125,7 @@ export function CreateProject() {
     
     return (
         <Box>
+            
             <SideBar/>
             <Title title="Create a new project"/>
             <Box sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }} 

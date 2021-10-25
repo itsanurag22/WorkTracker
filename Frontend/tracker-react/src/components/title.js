@@ -12,6 +12,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 
 export default function Title(props) {
   const history = useHistory()
+  const [isLogIn, setLogIn] = React.useState(false)
   const mytoken = cookie.load("authtoken")
 
     const drawerWidth = 240;
@@ -33,6 +34,28 @@ export default function Title(props) {
           console.log(err);
       })
   }
+  async function CheckLogin(){
+      
+    axios.get('http://127.0.0.1:8200/tracker_app/checklogin/', {headers:{"Content-Type": "application/json", "Authorization": `Token ${mytoken}`}} )
+    .then(response => {
+        console.log(response)
+        setLogIn(true);
+         
+        
+        
+    })
+    .catch(err => {
+        
+        console.log(err);
+        setLogIn(false);
+        history.push("/")
+
+    })
+}
+React.useEffect(()=>{
+  CheckLogin();
+  
+}, [])
 
   return (
     <Box sx={{ flexGrow: 1 }} mb={2}>
@@ -44,6 +67,7 @@ export default function Title(props) {
           <Button  style={{ color: '#FFFFFF', }} onClick={()=>{logOut()}}>
             Logout
           </Button>
+          
         </Toolbar>
       </AppBar>
     </Box>

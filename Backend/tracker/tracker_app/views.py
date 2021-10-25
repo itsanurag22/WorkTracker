@@ -135,15 +135,17 @@ def log_out(request):
 
 
 @api_view(['GET'])
+@authentication_classes([SessionAuthentication,TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def login_check(request):
-     if request.user.is_authenticated:
+     if request.user.is_authenticated and not request.user.banned:
           
-          response = Response({'loggedin': True}, status=status.HTTP_200_OK)
+          response = Response('User is logged in', status=status.HTTP_200_OK)
           response['Access-Control-Allow-Origin'] = 'http://localhost:3000'
           response['Access-Control-Allow-Credentials'] = 'true'
           return response
      else:
-          response = Response({'loggedin': False}, status=status.HTTP_200_OK)
+          response = Response('User is not loggedin', status=status.HTTP_200_OK)
           response['Access-Control-Allow-Origin'] = 'http://localhost:3000'
           response['Access-Control-Allow-Credentials'] = 'true'
           return response
@@ -179,6 +181,7 @@ class ProjectViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
      def perform_create(self, serializer):
           serializer.validated_data['project_members'].append(self.request.user)
           serializer.save(creator = self.request.user)
+          
 
      def get_permissions(self):
           if self.request.method == "POST" or self.request.method =="GET":
